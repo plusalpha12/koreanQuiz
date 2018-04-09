@@ -16,9 +16,6 @@ public class MainServer {
     public static void main(String[] args) {
         // TODO Auto-generated method stub
     	
-    	int exit;
-    	Scanner scan = new Scanner(System.in);
-    	
         try(ServerSocket server = new ServerSocket(6060)) {
         	
         	while (true) {
@@ -26,11 +23,6 @@ public class MainServer {
                 System.out.println(getTime()+"서버 준비");
                 System.out.println(getTime()+"클라이언트 대기");
                 
-                exit = scan.nextInt();
-                
-                if(exit == 1) {
-                    System.exit(0);
-                }
         		Socket client = server.accept();
                 Server_thread ST = new Server_thread(client);
                 ST.run();
