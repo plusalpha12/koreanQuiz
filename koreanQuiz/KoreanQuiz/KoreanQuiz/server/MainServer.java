@@ -1,3 +1,5 @@
+package server;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -58,7 +60,7 @@ class Server_thread extends Thread{
             String readData = "";
             
             while(!(readData = br.readLine()).equals(null)){				//상대쪽에서 접속을 끊을때까지 기다립니다.
-                 System.out.println(getTime()+"from Client > "+readData);	//클라리언트가 보낸 메세지를 읽습니다.
+                 System.out.println("from Client > "+ readData);			//클라리언트가 보낸 메세지를 읽습니다.
                  pw.println(readData);										//읽은 메세지 그대로 클라이언트 한테 보냅니다.
                  pw.flush();												//프린트라이터 메모리를 초기화 시킵니다. 이 메소드가 행해져야 실질적으로 데이터가 전송됨
                  }
@@ -73,8 +75,4 @@ class Server_thread extends Thread{
         }
         
     }
-	static String getTime(){
-        SimpleDateFormat f = new SimpleDateFormat("[HH:mm:ss]");
-        return f.format(new Date());
-        }
 }
