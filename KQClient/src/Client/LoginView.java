@@ -71,12 +71,12 @@ public class LoginView extends JFrame{
 		userText = new JTextField(20);
 		userText.setBounds(100, 10, 160, 25);
 		panel.add(userText);
-		dto.setUserId(userText.getText());
+		//dto.setUserId(userText.getText());
 		
 		passText = new JPasswordField(20);
 		passText.setBounds(100, 40, 160, 25);
 		panel.add(passText);
-		dto.setUserpwd(passText.getText());
+		//dto.setUserpwd(passText.getText());
 		
 		passText.addActionListener(new ActionListener() {			
 			@Override
