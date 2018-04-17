@@ -11,7 +11,6 @@ import javax.swing.border.EmptyBorder;
 import Client.LoginView;
 import Client.MainProcess;
 import Client.Single;
-import Client.TestFrm;
 
 import javax.swing.JButton;
 import javax.swing.SwingConstants;

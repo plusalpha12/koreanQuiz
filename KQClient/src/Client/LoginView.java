@@ -17,10 +17,11 @@ public class LoginView extends JFrame{
 	private UserDTO dto;
 	
 	private MainProcess main;
-	private TestFrm testFrm;
 	
 	private JButton btnLogin;
+	private JButton btnJoin;
 	private JButton btnInit;
+	
 	private JPasswordField passText;
 	private JTextField userText;
 	private boolean bLoginCheck;
@@ -77,7 +78,6 @@ public class LoginView extends JFrame{
 		passText.setBounds(100, 40, 160, 25);
 		panel.add(passText);
 		//dto.setUserpwd(passText.getText());
-		
 		passText.addActionListener(new ActionListener() {			
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -86,9 +86,8 @@ public class LoginView extends JFrame{
 		});
 		
 		btnInit = new JButton("\uCD08\uAE30\uD654");
-		btnInit.setBounds(10, 80, 100, 25);
+		btnInit.setBounds(10, 80, 80, 25);
 		panel.add(btnInit);
-		
 		btnInit.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -97,8 +96,23 @@ public class LoginView extends JFrame{
 			}
 		});
 		
+		btnJoin = new JButton("회원가입");
+		btnJoin.setBounds(100, 80, 90, 25);
+		panel.add(btnJoin);
+		btnJoin.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					JoinView join = new JoinView();
+					join.setVisible(true);
+				}catch(Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
+		
 		btnLogin = new JButton("로그인");
-		btnLogin.setBounds(160, 80, 100, 25);
+		btnLogin.setBounds(200, 80, 80, 25);
 		panel.add(btnLogin);
 		btnLogin.addActionListener(new ActionListener() {
 			@Override
@@ -115,7 +129,6 @@ public class LoginView extends JFrame{
 			
 			// 로그인 성공이라면 매니져창 뛰우기
 			if(isLogin()){
-				main.showFrameTest(); // 메인창 메소드를 이용해 창뛰우기
 			}					
 		}else{
 			JOptionPane.showMessageDialog(null, "Faild");

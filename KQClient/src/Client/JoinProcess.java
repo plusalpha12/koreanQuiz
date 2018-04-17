@@ -7,15 +7,15 @@ import java.util.Scanner;
 import java.util.ArrayList;
 
 
-public class MainProcess{
-	LoginView loginView;
+public class JoinProcess{
+	JoinView joinview;
 	
 	public static void main(String[] args)  throws IOException {
 		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					MainProcess frame = new MainProcess();
+					JoinView frame = new JoinView();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -23,19 +23,22 @@ public class MainProcess{
 			}
 		});
 
-		// 메인클래스 실행
-		MainProcess main = new MainProcess();
-		main.loginView = new LoginView(); // 로그인창 보이기
-		main.loginView.setMain(main); // 로그인창에게 메인 클래스보내기
-		main.backgroundClient();
+		// 클래스 실행
+		JoinProcess join = new JoinProcess();
+		join.backgroundJoin();
 	}
 	
 	protected void setVisible(boolean b) {
 		// TODO Auto-generated method stub
 	}
 	
+	// 테스트프레임창
+	public void showFrameTest(){
+		joinview.dispose(); // 회원가입 창닫기
+	}
+	
 	// 클라이언트 백그라운드 스레드
-	public void backgroundClient() {
+	public void backgroundJoin() {
 		Socket socket = null;
 		DataInputStream dis = null;
 		DataOutputStream dos = null;
@@ -48,7 +51,7 @@ public class MainProcess{
 			dos = new DataOutputStream(out);
 			//dos.writeUTF(UserId);
 			
-			LoginThread ct = new LoginThread(socket.getInputStream());
+			JoinThread ct = new JoinThread(socket.getInputStream());
 			ct.start();
 		}
 		catch(IOException e){
@@ -66,10 +69,10 @@ public class MainProcess{
 	}
 }
 
-class LoginThread extends Thread{
+class JoinThread extends Thread{
 	ArrayList userData = new ArrayList();
 	private InputStream is = null;
-	public LoginThread(InputStream is) {
+	public JoinThread(InputStream is) {
 		this.is = is;
 	}
 	public void run() {

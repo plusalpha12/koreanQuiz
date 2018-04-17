@@ -24,7 +24,7 @@ import javax.swing.ButtonGroup;
 import java.awt.event.MouseWheelListener;
 import java.awt.event.MouseWheelEvent;
 
-public class join extends JFrame {
+public class JoinView extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField textField;
@@ -32,6 +32,7 @@ public class join extends JFrame {
 	private JPasswordField passwordField;
 	private JPasswordField passwordField_1;
 	private final ButtonGroup buttonGroup = new ButtonGroup();
+	private JoinProcess join;
 
 	/**
 	 * Launch the application.
@@ -40,7 +41,7 @@ public class join extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					join frame = new join();
+					JoinView frame = new JoinView();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -52,13 +53,14 @@ public class join extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public join() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	public JoinView() {
+		setTitle("Join");
 		setBounds(100, 100, 492, 332);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
+		setDefaultCloseOperation(this.EXIT_ON_CLOSE);
 		
 		JPanel panel = new JPanel();
 		panel.setBounds(0, 0, 476, 293);
@@ -93,8 +95,8 @@ public class join extends JFrame {
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JOptionPane.showMessageDialog(null, "회원가입 완료!.");
-
-					}
+				dispose();
+			}
 		});
 		btnNewButton.setBounds(344, 239, 97, 23);
 		panel.add(btnNewButton);
@@ -151,5 +153,9 @@ public class join extends JFrame {
 		panel.add(spinner_2);
 		
 		
+	}
+	// JoinProcess와 연동
+	public void setMain(JoinProcess join) {
+		this.join = join;
 	}
 }

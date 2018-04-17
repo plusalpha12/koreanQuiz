@@ -85,7 +85,7 @@ public class Single extends JFrame {
 		JButton button = new JButton("\uD68C\uC6D0\uAC00\uC785");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				new join();
+				new JoinView();
 			}
 		});
 		button.setBounds(289, 183, 119, 44);
