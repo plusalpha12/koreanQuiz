@@ -1,4 +1,4 @@
-package Client;
+package server;
 
 public class UserDTO {
 
@@ -8,8 +8,7 @@ public class UserDTO {
 	private String newUserpwd = null;
 	private String newUsername = null;
 	private String newUserbirth = null;
-	private boolean logincheck = false;
-	private int check = 1;
+	private int loginerror = 0;
 
 	public String getUserId() {
 		return UserId;
@@ -47,15 +46,11 @@ public class UserDTO {
 	public void setNewUserbirth(String newUserbirth) {
 		this.newUserbirth = newUserbirth;
 	}
-	public boolean isLogincheck() {
-		return logincheck;
+	public int getLoginerror() {
+		return loginerror;
 	}
-	public void setLogincheck(boolean logincheck, int check) {
-		this.logincheck = logincheck;
-		this.check = check;
-	}
-	public int getCheck() {
-		return check;
+	public void setLoginerror(int loginerror) {
+		this.loginerror = loginerror;
 	}
 
 }

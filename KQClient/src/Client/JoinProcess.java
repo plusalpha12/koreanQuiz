@@ -9,9 +9,9 @@ import java.util.ArrayList;
 
 public class JoinProcess{
 	JoinView joinview;
-	
+
 	public static void main(String[] args)  throws IOException {
-		
+
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -27,30 +27,30 @@ public class JoinProcess{
 		JoinProcess join = new JoinProcess();
 		join.backgroundJoin();
 	}
-	
+
 	protected void setVisible(boolean b) {
 		// TODO Auto-generated method stub
 	}
-	
+
 	// 테스트프레임창
 	public void showFrameTest(){
 		joinview.dispose(); // 회원가입 창닫기
 	}
-	
+
 	// 클라이언트 백그라운드 스레드
 	public void backgroundJoin() {
 		Socket socket = null;
 		DataInputStream dis = null;
 		DataOutputStream dos = null;
-		
+
 		try {
 			socket = new Socket("localhost", 6060);
-		
+
 			OutputStream out = socket.getOutputStream();
 			InputStream in = socket.getInputStream();
 			dos = new DataOutputStream(out);
 			//dos.writeUTF(UserId);
-			
+
 			JoinThread ct = new JoinThread(socket.getInputStream());
 			ct.start();
 		}
@@ -88,6 +88,6 @@ class JoinThread extends Thread{
 		catch(IOException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
 }
