@@ -37,8 +37,7 @@ class Server_thread extends Thread{
 	private ObjectInputStream ois = null;
 	private ObjectOutputStream oos = null;
 	private ArrayList userdata = null;
-	private String logincheck = null;
-	private Database db = null;
+	private String logincheck;
 
 	Server_thread(Socket soc){
 		this.soc = soc;
@@ -46,38 +45,42 @@ class Server_thread extends Thread{
 
 	public void run() {
 		userdata = new ArrayList();
+		Database db = new Database();
+		logincheck = "";
+		boolean test = false;
 
 		try{
 			System.out.println("클라이언트 연결");
 
 			ois = new ObjectInputStream(soc.getInputStream());
 			oos = new ObjectOutputStream(soc.getOutputStream());
-			
+
 			try {
 				userdata = (ArrayList)ois.readObject();
 
-				if(userdata.size() > 0) {
+				System.out.println(userdata.get(0));
 
+				if(userdata.size() > 0) {
 					//로그인 클릭시
-					if(userdata.get(0).equals("userlogin")) {
+					if(userdata.get(0).toString().equals("userlogin")) {
 
 						String userid = new String(userdata.get(1).toString());
 						String userpwd = new String(userdata.get(2).toString());
-
+				
+						test = db.IdCheck(userid);
+						
 						System.out.println(userid + " " + userpwd);
-
-
-						if(db.IdCheck(userid)) {
-							System.out.println("승인");
+						
+						if(test) {
 							if(db.PwdCheck(userid, userpwd)) {
 								System.out.println("승인");
+								oos.writeObject("login");
+								oos.flush();
 							}else {
 								//비밀번호가 틀렸을 시
 								System.out.println("비밀번호");
-								try {
-									oos.writeObject("password");
-									oos.flush();
-								} catch(IOException e) { e.printStackTrace(); }
+								oos.writeObject("password");
+								oos.flush();
 							}
 						}else {
 							//아이디가 존재하지 않을 시
@@ -85,8 +88,6 @@ class Server_thread extends Thread{
 							oos.writeObject("id");
 							oos.flush();
 						}
-						oos.writeObject("password");
-						oos.flush();
 
 						//회원가입 클릭시
 					}else if(userdata.get(0).equals("userjoin")){

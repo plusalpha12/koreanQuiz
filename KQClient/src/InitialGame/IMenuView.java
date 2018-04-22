@@ -10,7 +10,7 @@ import javax.swing.border.EmptyBorder;
 
 import Client.LoginView;
 import Client.MainProcess;
-import Client.Single;
+import Client.MainMenu;
 
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
@@ -22,14 +22,12 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.ButtonGroup;
 
-public class Display extends JFrame {
+public class IMenuView extends JFrame {
+	MainMenu single;
 	
 	static JFrame jf;
 	
-
 	private JPanel contentPane;
-	Single single;
-	private final ButtonGroup buttonGroup = new ButtonGroup();
 	
 	/**
 	 * Launch the application.
@@ -39,7 +37,7 @@ public class Display extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Display frame = new Display();
+					IMenuView frame = new IMenuView();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -52,68 +50,63 @@ public class Display extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public Display() {
+	public IMenuView() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		jf =  new JFrame("Layout");
-        jf.setSize(300, 300);
-        jf.setLocation(700, 400);
-
-
-
-		setBounds(100, 100, 450, 300);
+		setSize(460, 300);
+		setLocationRelativeTo(null);
 		
 		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(37, 49, 37, 49));
+		contentPane.setBorder(new EmptyBorder(20, 50, 20, 50));
 		setContentPane(contentPane);
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		contentPane.setLayout(null);
-		
 		JPanel panel = new JPanel();
-		panel.setBounds(0, 0, 434, 261);
+		panel.setBounds(0, 0, 450, 300);
 		contentPane.add(panel);
 		panel.setLayout(null);
 		
 		
-		
-		JLabel lblNewLabel = new JLabel("< \uCD08\uC131\uAC8C\uC784 >");
-		lblNewLabel.setBounds(112, 32, 214, 50);
+		JLabel lblNewLabel = new JLabel("< 초성게임 >");
+		lblNewLabel.setBounds(110, 30, 220, 50);
 		panel.add(lblNewLabel);
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel.setFont(new Font("휴먼편지체", Font.PLAIN, 42));
 		
-		JButton button_single = new JButton("\uD63C\uC790\uD558\uAE30");
-		button_single.setBounds(112, 92, 214, 43);
+		JButton button_single = new JButton("혼자하기");
+		button_single.setBounds(120, 90, 210, 40);
 		panel.add(button_single);
-		buttonGroup.add(button_single);
+		button_single.setFont(new Font("휴먼편지체", Font.PLAIN, 18));
 		button_single.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//JButton button_Single=(JButton)e.getSource();
-				new Single();
+				new IGameView();
 			}
 		});
-		button_single.setFont(new Font("휴먼편지체", Font.PLAIN, 18));
 		
-		JButton button_together = new JButton("\uAC19\uC774\uD558\uAE30");
-		button_together.setBounds(112, 145, 214, 38);
+		JButton button_together = new JButton("같이하기");
+		button_together.setBounds(120, 145, 210, 40);
 		panel.add(button_together);
-		buttonGroup.add(button_together);
 		button_together.setFont(new Font("휴먼편지체", Font.PLAIN, 18));
+		button_together.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//JButton button_Single=(JButton)e.getSource();
+				new IGameView();
+			}
+		});
 		
-		JButton button_exit = new JButton("\uC885\uB8CC\uD558\uAE30");
-		button_exit.setBounds(112, 193, 214, 38);
+		JButton button_exit = new JButton("종료하기");
+		button_exit.setBounds(120, 200, 210, 40);
 		panel.add(button_exit);
+		button_exit.setFont(new Font("휴먼편지체", Font.PLAIN, 18));
 		button_exit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dispose();
 			}
 		});
-		buttonGroup.add(button_exit);
-		button_exit.setFont(new Font("휴먼편지체", Font.PLAIN, 18));
+		
+		
 		setVisible(true);
-		
-
-		
 	}
-
 }

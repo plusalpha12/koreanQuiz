@@ -2,33 +2,32 @@ package server;
 import java.sql.*;
 
 public class Database {
-	private Connection conn;
-	private ResultSet rs;
-	private PreparedStatement ps;
+	private static Connection conn = null;
+	private static PreparedStatement ps = null;
 	private UserDTO dto;
 
 	public Database() {
-		System.setProperty("jdbc.drivers","com.mysql.jdbc.Driver");
-		try {
-			Class.forName("com.mysql.jdbc.Driver");
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
+		try { Class.forName("com.mysql.jdbc.Driver");
+		} catch (ClassNotFoundException e) {e.printStackTrace();}
 
-		String strUrl = "jdbc:mysql://localhost:3306/Korean_Q_server";
+		String strUrl = "jdbc:mysql://localhost:3306/korean_q_server?verifyServerCertificate=false&useSSL=true&autoReconnect=true";
+		String db_id = secret_Data.getDB_admin();
+		String db_pwd = secret_Data.getDB_passwd();
+		
 		try {
-			conn = DriverManager.getConnection(strUrl, secret_Data.getDB_admin(), secret_Data.getDB_passwd());
+			conn = DriverManager.getConnection(strUrl, db_id, db_pwd);
+			System.out.println("db start");
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			System.out.println("test failed");
 			e.printStackTrace();
 		}			
 	}
 
 	public void Join_user(String UserID, String UserPasswd, String UserName) {
+		ps = null;
 		try {
-			PreparedStatement ps 
-			= conn.prepareStatement("insert userdata set NULL, UserID=?, UserPasswd=?, UserName=?");
+			ps = conn.prepareStatement("insert userdata set NULL, UserName=?, UserID=?, UserPasswd=?, 1");
 			ps.setString(1, UserID);
 			ps.setString(2, UserPasswd);
 			ps.setString(3, UserName);
@@ -43,42 +42,46 @@ public class Database {
 	}
 
 	// 殿废 酒捞叼 蜡公 眉农
-	public boolean IdCheck(String id) {
+	public static boolean IdCheck(String id) {
 		boolean idcheck = false;
-		UserDTO user = new UserDTO();
+		ResultSet rs = null;
+		ps = null;
+		
+		System.out.println("db test");
 
 		try {
-			ps = conn.prepareStatement("select password from user where userid = ?");
-
+			ps = conn.prepareStatement("select * from userdata where UserID = ?");
 			ps.setString(1, id);
+			
 			rs = ps.executeQuery();
-
-			System.out.println("1");
 
 			if(rs.next()) {
 				idcheck = true;
 			}
-
-		}catch (SQLException e) {e.printStackTrace();}
+		}catch (SQLException e) {
+			System.out.println("db testfailed");
+			e.printStackTrace();
+			}
 		finally {	// 眉农 饶 第贸府
 			if (rs != null) try { rs.close(); } catch(SQLException e) {}
 			if (ps != null) try { ps.close(); } catch(SQLException e) {}
-			if (conn != null) try { conn.close(); } catch(SQLException e) {}
 		}
 		return idcheck;
 	}
 
 	public boolean PwdCheck(String id, String password) {
 		boolean logincheck = false;
-		String pwd = new String("");
+		String pwd = "";
+		ResultSet rs = null;
+		ps = null;
 		try {
-			ps = conn.prepareStatement("select password from user where userid = ?");
-
+			ps = conn.prepareStatement("select UserPasswd from userdata where UserID = ?");
 			ps.setString(1, id);
+			
 			rs = ps.executeQuery();
 
 			if(rs.next()) {
-				pwd = rs.getString("password");
+				pwd = rs.getString("UserPasswd");
 				if(pwd.equals(password)) {
 					logincheck = true;
 				}
@@ -92,7 +95,6 @@ public class Database {
 		finally {	// 眉农 饶 第贸府
 			if (rs != null) try { rs.close(); } catch(SQLException e) {}
 			if (ps != null) try { ps.close(); } catch(SQLException e) {}
-			if (conn != null) try { conn.close(); } catch(SQLException e) {}
 		}
 		return logincheck;
 	}

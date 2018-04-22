@@ -52,6 +52,8 @@ public class MainProcess{
 				oos.writeObject(userData);
 				oos.flush();
 				System.out.println("데이터 전송 완료");
+				
+				ois = null;
 
 				ois = new ObjectInputStream(socket.getInputStream());
 

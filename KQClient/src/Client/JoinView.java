@@ -42,8 +42,9 @@ public class JoinView extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					JoinView frame = new JoinView();
-					frame.setVisible(true);
+					JoinView joinView = new JoinView();
+					joinView.setLocationRelativeTo(null);
+					joinView.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -56,7 +57,7 @@ public class JoinView extends JFrame {
 	 */
 	public JoinView() {
 		setTitle("Join");
-		setBounds(100, 100, 492, 332);
+		setSize(400, 350);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);

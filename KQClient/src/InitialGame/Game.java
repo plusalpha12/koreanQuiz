@@ -4,7 +4,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-public class game {
+public class Game {
+	
+	private IGameView igame = new IGameView();
 	
 	static public String getRandomString(int length) {
 		StringBuffer buffer = new StringBuffer();
@@ -17,12 +19,14 @@ public class game {
 		}
 		return buffer.toString();
 	}
+
+	public void GameGUI(IGameView igame) {
+		this.igame = igame;
+	}
 	
 
 	public static void main(String[] args) {
-		String random=game.getRandomString(2);
+		String random=Game.getRandomString(2);
 		System.out.println(random);
-		
 	}
-
 }

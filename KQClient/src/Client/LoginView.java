@@ -27,15 +27,24 @@ public class LoginView extends JFrame{
 	private boolean bLoginCheck;
 
 	public static void main(String[] args) {
-		new LoginView();
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					LoginView loginView = new LoginView();
+					loginView.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
 	}
 
 	public LoginView() {
 		// setting
 		setTitle("login");
-		setSize(295, 144);
+		setSize(300, 150);
+		setLocationRelativeTo(null);
 		setResizable(false);
-		setLocation(800, 450);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 
 		// panel
@@ -80,20 +89,6 @@ public class LoginView extends JFrame{
 			}
 		});
 
-		btnJoin = new JButton("회원가입");
-		btnJoin.setBounds(100, 80, 90, 25);
-		panel.add(btnJoin);
-		btnJoin.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
-					JoinView join = new JoinView();
-					join.setVisible(true);
-				}catch(Exception e1) {
-					e1.printStackTrace();
-				}
-			}
-		});
 
 		btnLogin = new JButton("로그인");
 		btnLogin.setBounds(200, 80, 80, 25);
@@ -110,6 +105,7 @@ public class LoginView extends JFrame{
 				if(dto.isLogincheck()) {			//로그인 승인이 되면
 					JOptionPane.showMessageDialog(null, "Success");
 					//게임창을 띄운다
+					new InitialGame.Quiz();
 					dispose();
 				}else if(dto.getCheck() == 2) {		//아이디 입력이 잘못 되었을 때
 					JOptionPane.showMessageDialog(null, "아이디가 존재하지 않습니다.");
@@ -121,38 +117,7 @@ public class LoginView extends JFrame{
 				}else {
 
 				}
-				
-				//isLoginCheck();
 			}
 		});
 	}
-
-	/*
-	public void isLoginCheck(){
-
-		if(!userText.getText().equals(null)){
-
-			JOptionPane.showMessageDialog(null, "Success");
-			bLoginCheck = true;
-			// 로그인 성공이라면 매니져창 뛰우기
-			if(isLogin()){
-
-			}
-		}else{
-			JOptionPane.showMessageDialog(null, "Faild");
-			userText.setText("");
-			passText.setText("");
-		}
-	}
-
-	public boolean isLogin() {		
-		return bLoginCheck;
-	}
-
-
-	// mainProcess와 연동
-	public void setMain(MainProcess main) {
-		this.main = main;
-	}
-	 */
 }
