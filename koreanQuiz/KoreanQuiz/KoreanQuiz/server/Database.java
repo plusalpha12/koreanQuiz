@@ -3,10 +3,13 @@ import java.sql.*;
 
 public class Database {
 	private static Connection conn = null;
-	private static PreparedStatement ps = null;
-	private UserDTO dto;
+	private PreparedStatement ps = null;
+	private ResultSet rs = null;
+	private UserDTO dto = null;
 
-	public Database() {
+	public Database(UserDTO dto) {
+		
+		this.dto = dto;
 		
 		try { Class.forName("com.mysql.jdbc.Driver");
 		} catch (ClassNotFoundException e) {e.printStackTrace();}
@@ -26,8 +29,9 @@ public class Database {
 
 	public void Join_user(String UserID, String UserPasswd, String UserName) {
 		ps = null;
+		
 		try {
-			ps = conn.prepareStatement("insert userdata set NULL, UserName=?, UserID=?, UserPasswd=?, 1");
+			ps = conn.prepareStatement("insert userdata set NULL, UserName=?, UserID=?, UserPasswd=?, 2");
 			ps.setString(1, UserID);
 			ps.setString(2, UserPasswd);
 			ps.setString(3, UserName);
@@ -36,19 +40,19 @@ public class Database {
 
 			ps.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		finally {	// 체크 후 뒤처리
+			if (ps != null) try { ps.close(); } catch(SQLException e) {}
 		}
 	}
 
 	// 등록 아이디 유무 체크
-	public static boolean IdCheck(String id) {
+	public boolean IdCheck(String id) {
 		boolean idcheck = false;
-		ResultSet rs = null;
+		rs = null;
 		ps = null;
-		
-		System.out.println("db test");
-
+	
 		try {
 			ps = conn.prepareStatement("select * from userdata where UserID = ?");
 			ps.setString(1, id);
@@ -68,14 +72,38 @@ public class Database {
 		}
 		return idcheck;
 	}
+	public boolean nameCheck(String name) {
+		boolean namecheck = false;
+		rs = null;
+		ps = null;
+	
+		try {
+			ps = conn.prepareStatement("select * from userdata where UserName = ?");
+			ps.setString(1, name);
+			
+			rs = ps.executeQuery();
+
+			if(rs.next()) {
+				namecheck = true;
+			}
+		}catch (SQLException e) {
+			System.out.println("db testfailed");
+			e.printStackTrace();
+			}
+		finally {	// 체크 후 뒤처리
+			if (rs != null) try { rs.close(); } catch(SQLException e) {}
+			if (ps != null) try { ps.close(); } catch(SQLException e) {}
+		}
+		return namecheck;
+	}
 
 	public boolean PwdCheck(String id, String password) {
 		boolean logincheck = false;
 		String pwd = "";
-		ResultSet rs = null;
+		rs = null;
 		ps = null;
 		try {
-			ps = conn.prepareStatement("select UserPasswd from userdata where UserID = ?");
+			ps = conn.prepareStatement("select * from userdata where UserID = ?");
 			ps.setString(1, id);
 			
 			rs = ps.executeQuery();
@@ -84,9 +112,8 @@ public class Database {
 				pwd = rs.getString("UserPasswd");
 				if(pwd.equals(password)) {
 					logincheck = true;
-				}
-				else {
-					// 입력한 비밀번호가 다를 시 출력
+					dto.setUserId(rs.getString("UserID"));
+					dto.setUserName(rs.getString("UserName"));
 				}
 			}
 
@@ -98,26 +125,6 @@ public class Database {
 		}
 		return logincheck;
 	}
-
-	/*public UserModel selectUser(String where) {
-		UserModel user = new UserModel();		
-		try {
-			PreparedStatement ps 
-			= conn.prepareStatement("select * from user where userid=?");
-			ps.setString(1, where);
-
-			ResultSet rs = ps.executeQuery();
-
-			rs.next();
-
-			user.setUserid(rs.getString("userid"));  
-			user.setPassword(rs.getString("password")); 
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}		
-		return user;
-	}*/
 
 	protected void finalize() throws Throwable {
 		// TODO Auto-generated method stub

@@ -1,15 +1,20 @@
 package server;
 
+import java.net.Socket;
+
 public class UserDTO {
 
 	private String UserId = null;
 	private String Userpwd = null;
+	private String UserName = null;
+	private Socket socket = null;
+	private int Score = 0;
+	
 	private String newUserId = null;
 	private String newUserpwd = null;
 	private String newUsername = null;
 	private String newUserbirth = null;
-	private int loginerror = 0;
-
+	
 	public String getUserId() {
 		return UserId;
 	}
@@ -22,6 +27,26 @@ public class UserDTO {
 	public void setUserpwd(String userpwd) {
 		Userpwd = userpwd;
 	}
+	public String getUserName() {
+		return UserName;
+	}
+	public void setUserName(String userName) {
+		UserName = userName;
+	}
+	public Socket getSocket() {
+		return socket;
+	}
+	public void setSocket(Socket socket) {
+		this.socket = socket;
+	}
+	public int getScore() {
+		return Score;
+	}
+	public void setScore(int score) {
+		Score = score;
+	}
+	
+	
 	public String getNewUserId() {
 		return newUserId;
 	}
@@ -46,11 +71,4 @@ public class UserDTO {
 	public void setNewUserbirth(String newUserbirth) {
 		this.newUserbirth = newUserbirth;
 	}
-	public int getLoginerror() {
-		return loginerror;
-	}
-	public void setLoginerror(int loginerror) {
-		this.loginerror = loginerror;
-	}
-
 }
