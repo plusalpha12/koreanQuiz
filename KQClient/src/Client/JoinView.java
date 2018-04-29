@@ -32,8 +32,9 @@ public class JoinView extends JFrame {
 	private JPasswordField passwordField;
 	private JPasswordField passwordField_1;
 	private final ButtonGroup buttonGroup = new ButtonGroup();
+	private JButton btnNewButton;
 	private JoinProcess join;
-	private UserDTO dto;
+	private UserDTO dto = new UserDTO();
 
 	/**
 	 * Launch the application.
@@ -42,9 +43,8 @@ public class JoinView extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					JoinView joinView = new JoinView();
-					joinView.setLocationRelativeTo(null);
-					joinView.setVisible(true);
+					JoinView joinview = new JoinView();
+					joinview.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -56,113 +56,100 @@ public class JoinView extends JFrame {
 	 * Create the frame.
 	 */
 	public JoinView() {
+		setDefaultCloseOperation(this.EXIT_ON_CLOSE);
+		
 		setTitle("Join");
-		setSize(400, 350);
+		setSize(350, 350);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		setDefaultCloseOperation(this.EXIT_ON_CLOSE);
+		setLocationRelativeTo(null);
 		
 		JPanel panel = new JPanel();
-		panel.setBounds(0, 0, 476, 293);
+		panel.setBounds(0, 0, 370, 350);
 		contentPane.add(panel);
 		panel.setLayout(null);
-		JLabel lblNewLabel = new JLabel("\uC774\uB984:");
-		lblNewLabel.setBounds(58, 133, 57, 15);
-		panel.add(lblNewLabel);
 		
-		JLabel label = new JLabel("\uC544\uC774\uB514:");
-		label.setBounds(58, 51, 57, 15);
+		JLabel label = new JLabel("아이디");
+		label.setBounds(60, 50, 60, 20);
 		panel.add(label);
-		JLabel label_1 = new JLabel("\uBE44\uBC00\uBC88\uD638:");
-		label_1.setBounds(58, 82, 57, 15);
+		JLabel label_1 = new JLabel("비밀번호");
+		label_1.setBounds(60, 80, 60, 20);
 		panel.add(label_1);
-		JLabel label_2 = new JLabel("\uBE44\uBC00\uBC88\uD638 \uD655\uC778:");
-		label_2.setBounds(58, 107, 90, 15);
+		JLabel label_2 = new JLabel("비밀번호 확인");
+		label_2.setBounds(60, 110, 90, 20);
 		panel.add(label_2);
-		JLabel label_3 = new JLabel("\uC0DD\uB144\uC6D4\uC77C:");
-		label_3.setBounds(58, 158, 57, 15);
-		panel.add(label_3);
-		JLabel label_4 = new JLabel("\uC131\uBCC4:");
-		label_4.setBounds(58, 183, 57, 15);
+		JLabel label_name = new JLabel("닉네임");
+		label_name.setBounds(60, 140, 60, 20);
+		panel.add(label);
+		JLabel label_4 = new JLabel("성별");
+		label_4.setBounds(60, 170, 60, 20);
 		panel.add(label_4);
 		
 		
-		newUserid = new JTextField();
-		newUserid.setBounds(145, 48, 116, 21);
+		newUserid = new JTextField(10);
+		newUserid.setBounds(145, 50, 120, 20);
 		panel.add(newUserid);
-		newUserid.setColumns(10);
 		
-		newUsername = new JTextField();
-		newUsername.setBounds(145, 130, 116, 21);
+		newUsername = new JTextField(10);
+		newUsername.setBounds(145, 140, 120, 20);
 		panel.add(newUsername);
-		newUsername.setColumns(10);
 		
 		passwordField = new JPasswordField();
-		passwordField.setBounds(144, 105, 117, 17);
+		passwordField.setBounds(145, 80, 120, 20);
 		panel.add(passwordField);
 		
 		passwordField_1 = new JPasswordField();
-		passwordField_1.setBounds(145, 78, 116, 19);
+		passwordField_1.setBounds(145, 110, 120, 20);
 		panel.add(passwordField_1);
 		
-		JCheckBox chckbxNewCheckBox = new JCheckBox("\uB0A8\uC790");
+		JCheckBox chckbxNewCheckBox = new JCheckBox("남자");
 		buttonGroup.add(chckbxNewCheckBox);
-		chckbxNewCheckBox.setBounds(143, 179, 60, 23);
+		chckbxNewCheckBox.setBounds(145, 165, 60, 25);
 		panel.add(chckbxNewCheckBox);
 		
-		JCheckBox chckbxNewCheckBox_1 = new JCheckBox("\uC5EC\uC790");
+		JCheckBox chckbxNewCheckBox_1 = new JCheckBox("여자");
 		buttonGroup.add(chckbxNewCheckBox_1);
-		chckbxNewCheckBox_1.setBounds(200, 179, 60, 23);
+		chckbxNewCheckBox_1.setBounds(200, 165, 60, 25);
 		panel.add(chckbxNewCheckBox_1);
 		
-		JSpinner spinner = new JSpinner();
-		spinner.addMouseWheelListener(new MouseWheelListener() {
-			public void mouseWheelMoved(MouseWheelEvent arg0) {
-			}
-		});
-		spinner.setModel(new SpinnerNumberModel(1994, 1900, 2000, 1));
-		spinner.setBounds(145, 155, 69, 22);
-		panel.add(spinner);
-		
-		JSpinner spinner_1 = new JSpinner();
-		spinner_1.addMouseWheelListener(new MouseWheelListener() {
-			public void mouseWheelMoved(MouseWheelEvent arg0) {
-			}
-		});
-		spinner_1.setModel(new SpinnerNumberModel(1, 1, 12, 1));
-		spinner_1.setBounds(226, 155, 29, 22);
-		panel.add(spinner_1);
-		
-		JSpinner spinner_2 = new JSpinner();
-		spinner_2.addMouseWheelListener(new MouseWheelListener() {
-			public void mouseWheelMoved(MouseWheelEvent arg0) {
-			}
-		});
-		spinner_2.setModel(new SpinnerNumberModel(1, 1, 31, 1));
-		spinner_2.setBounds(267, 155, 29, 22);
-		panel.add(spinner_2);
-		
 
-		JButton btnNewButton = new JButton("\uC644\uB8CC");
+		btnNewButton = new JButton("회원가입");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(passwordField.getText().equals(passwordField_1.getText())) {
+					
 					dto.setNewUserId(newUserid.getText());
 					dto.setNewUsername(newUsername.getText());
 					dto.setNewUserpwd(passwordField.getText());
-					//dto.setNewUserbirth(newUserid.getText());
+					
+					join.backgroundJoin(dto);
+				
+					if(dto.isJoincheck()) {			//회원가입 승인
+						JOptionPane.showMessageDialog(null, "회원가입 완료");
+						dispose();
+					}else if(dto.getJcheck() == 2) {		//아이디 입력이 잘못 되었을 때
+						JOptionPane.showMessageDialog(null, "중복되는 아이디가 있습니다.");
+						newUserid.setText("");
+					}else if(dto.getJcheck() == 3) {		//비밀번호가 틀렸을 때
+						JOptionPane.showMessageDialog(null, "중복되는 닉네임이 있습니다.");
+						newUsername.setText("");
+					}else {
+
+					}
 					JOptionPane.showMessageDialog(null, "회원가입 완료!");
 					dispose();
+				}else {
+					JOptionPane.showMessageDialog(null, "비밀번호가 일치하지 않습니다.");
+					passwordField.setText("");
+					passwordField_1.setText("");
 				}
 			}
 		});
-		btnNewButton.setBounds(344, 239, 97, 23);
+		btnNewButton.setBounds(180, 240, 100, 25);
 		panel.add(btnNewButton);
-	}
-	// JoinProcess와 연동
-	public void setMain(JoinProcess join) {
-		this.join = join;
+		
+		setVisible(true);
 	}
 }

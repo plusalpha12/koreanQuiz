@@ -9,7 +9,9 @@ public class UserDTO {
 	private String newUsername = null;
 	private String newUserbirth = null;
 	private boolean logincheck = false;
-	private int check = 1;
+	private boolean Joincheck = false;
+	private int Lcheck = 1;
+	private int Jcheck = 1;
 
 	public String getUserId() {
 		return UserId;
@@ -41,21 +43,27 @@ public class UserDTO {
 	public void setNewUsername(String newUsername) {
 		this.newUsername = newUsername;
 	}
-	public String getNewUserbirth() {
-		return newUserbirth;
-	}
-	public void setNewUserbirth(String newUserbirth) {
-		this.newUserbirth = newUserbirth;
-	}
+	
+	
 	public boolean isLogincheck() {
 		return logincheck;
 	}
 	public void setLogincheck(boolean logincheck, int check) {
 		this.logincheck = logincheck;
-		this.check = check;
+		this.Lcheck = check;
 	}
-	public int getCheck() {
-		return check;
+	public int getLcheck() {
+		return Lcheck;
+	}
+	public boolean isJoincheck() {
+		return Joincheck;
+	}
+	public void setJoincheck(boolean joincheck, int check) {
+		Joincheck = joincheck;
+		this.Jcheck = check;
+	}
+	public int getJcheck() {
+		return Jcheck;
 	}
 
 }

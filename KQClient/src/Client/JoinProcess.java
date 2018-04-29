@@ -1,93 +1,77 @@
 package Client;
 
-import java.awt.EventQueue;
-import java.io.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.Scanner;
 import java.util.ArrayList;
 
 
 public class JoinProcess{
-	JoinView joinview;
+	private JoinView joinview;
+	private Socket socket = null;
+	private ObjectOutputStream oos = null;
+	private ObjectInputStream ois = null;
+	private ArrayList userData = null;
+	private String Joincheck = null;
 
+	public void JoinView(JoinView joinView) {
+		this.joinview = joinView;
+	}
+	
 	public static void main(String[] args)  throws IOException {
-
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					JoinView frame = new JoinView();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-
-		// 클래스 실행
-		JoinProcess join = new JoinProcess();
-		join.backgroundJoin();
 	}
 
-	protected void setVisible(boolean b) {
-		// TODO Auto-generated method stub
-	}
-
-	// 테스트프레임창
-	public void showFrameTest(){
-		joinview.dispose(); // 회원가입 창닫기
-	}
-
-	// 클라이언트 백그라운드 스레드
-	public void backgroundJoin() {
-		Socket socket = null;
-		DataInputStream dis = null;
-		DataOutputStream dos = null;
+	// 클라이언트 백그라운드 회원가입 스레드
+	public void backgroundJoin(UserDTO dto) {
+		userData = new ArrayList();
+		Joincheck = "";
+		oos = null;
+		ois = null;
 
 		try {
-			socket = new Socket("localhost", 6060);
+			socket = new Socket("192.168.35.121", 6060);
 
-			OutputStream out = socket.getOutputStream();
-			InputStream in = socket.getInputStream();
-			dos = new DataOutputStream(out);
-			//dos.writeUTF(UserId);
+			oos = new ObjectOutputStream(socket.getOutputStream());
+			oos.flush();
 
-			JoinThread ct = new JoinThread(socket.getInputStream());
-			ct.start();
-		}
-		catch(IOException e){
-			e.printStackTrace();
-		}
-		finally {
+			String userid = new String(dto.getNewUserId());
+			String userpwd = new String(dto.getNewUserpwd());
+			String username = new String(dto.getNewUsername());
+
+			userData.add(0, "userjoin");
+			userData.add(1, userid);
+			userData.add(2, userpwd);
+			userData.add(3, username);
+			
 			try {
-				dos.close();
-				socket.close();
-			}
-			catch(IOException e){
-				e.printStackTrace();
-			}
-		}
-	}
-}
+				oos.writeObject(userData);
+				oos.flush();
+				System.out.println("데이터 전송 완료");
+				ois = new ObjectInputStream(socket.getInputStream());
 
-class JoinThread extends Thread{
-	ArrayList userData = new ArrayList();
-	private InputStream is = null;
-	public JoinThread(InputStream is) {
-		this.is = is;
-	}
-	public void run() {
-		DataInputStream dis = null;
-		try {
-			dis = new DataInputStream(is);
-			String msg = "";
-			while(true) {
-				msg = dis.readUTF();
-				System.out.println(msg);
-			}
-		}
-		catch(IOException e) {
-			e.printStackTrace();
-		}
+				
+				try {
+					Joincheck = (String)ois.readObject();
+					System.out.println(Joincheck);
 
+					if(Joincheck.length() > 0) {
+						if(Joincheck.equals("join")) {
+							dto.setJoincheck(true, 1);
+						}else if(Joincheck.equals("dupid")){
+							dto.setJoincheck(false, 2);
+						}else if(Joincheck.equals("dupname")) {
+							dto.setJoincheck(false, 3);
+						}else {}				
+					}
+
+				} catch (ClassNotFoundException e) {e.printStackTrace();}
+			} catch(IOException e) {e.printStackTrace();}
+		}catch(IOException e){e.printStackTrace();}
+		finally {
+			if (ois != null) try { ois.close(); } catch(IOException e) {}
+			if (oos != null) try { oos.close(); } catch(IOException e) {}
+			if (socket != null) try { socket.close(); } catch(IOException e) {}
+		}
 	}
 }

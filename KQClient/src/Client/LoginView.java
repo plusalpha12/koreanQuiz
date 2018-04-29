@@ -1,6 +1,7 @@
 package Client;
 
 import java.awt.EventQueue;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -79,7 +80,7 @@ public class LoginView extends JFrame{
 		panel.add(passText);
 
 		btnInit = new JButton("\uCD08\uAE30\uD654");
-		btnInit.setBounds(10, 80, 80, 25);
+		btnInit.setBounds(10, 80, 75, 25);
 		panel.add(btnInit);
 		btnInit.addActionListener(new ActionListener() {
 			@Override
@@ -88,10 +89,18 @@ public class LoginView extends JFrame{
 				passText.setText("");
 			}
 		});
-
+		
+		JButton button_join = new JButton("회원가입");
+		button_join.setBounds(100, 80, 90, 25);
+		panel.add(button_join);
+		button_join.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new JoinView();
+			}
+		});
 
 		btnLogin = new JButton("로그인");
-		btnLogin.setBounds(200, 80, 80, 25);
+		btnLogin.setBounds(205, 80, 75, 25);
 		panel.add(btnLogin);
 		btnLogin.addActionListener(new ActionListener() {
 			@Override
@@ -102,16 +111,15 @@ public class LoginView extends JFrame{
 
 				main.backgroundClient(dto);
 			
-				if(dto.isLogincheck()) {			//로그인 승인이 되면
+				if(dto.isLogincheck()) {			//로그인 승인
 					JOptionPane.showMessageDialog(null, "Success");
-					//게임창을 띄운다
-					new InitialGame.Quiz();
+					new MainMenu();
 					dispose();
-				}else if(dto.getCheck() == 2) {		//아이디 입력이 잘못 되었을 때
+				}else if(dto.getLcheck() == 2) {		//아이디 입력이 잘못 되었을 때
 					JOptionPane.showMessageDialog(null, "아이디가 존재하지 않습니다.");
 					userText.setText("");
 					passText.setText("");
-				}else if(dto.getCheck() == 3) {		//비밀번호가 틀렸을 때
+				}else if(dto.getLcheck() == 3) {		//비밀번호가 틀렸을 때
 					JOptionPane.showMessageDialog(null, "비밀번호가 틀렸습니다.");
 					passText.setText("");
 				}else {
