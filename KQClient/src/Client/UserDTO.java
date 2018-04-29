@@ -7,7 +7,6 @@ public class UserDTO {
 	private String newUserId = null;
 	private String newUserpwd = null;
 	private String newUsername = null;
-	private String newUserbirth = null;
 	private boolean logincheck = false;
 	private boolean Joincheck = false;
 	private int Lcheck = 1;

@@ -23,10 +23,8 @@ import java.awt.event.MouseEvent;
 import javax.swing.ButtonGroup;
 
 public class IMenuView extends JFrame {
-	MainMenu single;
 	
-	static JFrame jf;
-	
+	private MainProcess main;
 	private JPanel contentPane;
 	
 	/**
@@ -80,7 +78,6 @@ public class IMenuView extends JFrame {
 		button_single.setFont(new Font("휴먼편지체", Font.PLAIN, 18));
 		button_single.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//JButton button_Single=(JButton)e.getSource();
 				new IGameView();
 			}
 		});

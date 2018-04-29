@@ -17,7 +17,7 @@ public class LoginView extends JFrame{
 
 	private UserDTO dto = new UserDTO();
 
-	private MainProcess main = new MainProcess();
+	private MainProcess main;
 
 	private JButton btnLogin;
 	private JButton btnJoin;
@@ -57,8 +57,6 @@ public class LoginView extends JFrame{
 
 		// visible
 		setVisible(true);
-
-		main.LoginGui(this);
 	}
 
 	public void placeLoginPanel(JPanel panel){
@@ -108,8 +106,9 @@ public class LoginView extends JFrame{
 
 				dto.setUserId(userText.getText());
 				dto.setUserpwd(passText.getText());
-
-				main.backgroundClient(dto);
+				
+				main = new MainProcess();
+				main.LoginBack(dto);
 			
 				if(dto.isLogincheck()) {			//·Î±×ÀÎ ½ÂÀÎ
 					JOptionPane.showMessageDialog(null, "Success");
