@@ -1,8 +1,10 @@
 package server;
 
+import java.io.Serializable;
+
 public class Client{
 	
-	private InitialGameRoom room = null;
+	private transient InitialGameRoom room = null;
 	private int roomnum = 0;
 	private String userid = null;
 	private String username = null;

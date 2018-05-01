@@ -5,6 +5,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import serial.sendclient;
+
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.SocketException;
@@ -21,7 +24,6 @@ public class MainServer{
 		igm = new InitialGameManager();
 		map = new HashMap<String, Client>();
 		wuser = new ArrayList<Client>();
-
 
 		try {
 			server = new ServerSocket(6060);
@@ -42,6 +44,7 @@ public class MainServer{
 		}
 	}
 
+	@SuppressWarnings("unused")
 	public static void main(String[] args) {
 		MainServer main = new MainServer();
 	} 
@@ -67,8 +70,6 @@ class Server_thread extends Thread{
 		this.igm = igm;
 		this.map = map;
 		this.wuser = wuser;
-		oos = null;
-		ois = null;
 		dto = new UserDTO();
 		db = new Database(dto);
 		try {
@@ -77,13 +78,15 @@ class Server_thread extends Thread{
 			oos = new ObjectOutputStream(soc.getOutputStream());
 		}
 		catch (SocketException|NullPointerException se) {
-			System.out.println("클라이언트 종료");
+			System.out.println("클라이언트 종료 1");
 			try { soc.close();}
 			catch (IOException e) {e.printStackTrace();}
 		} catch (IOException e) {e.printStackTrace();}
 	}
 
+	@SuppressWarnings({ "unchecked", "unused" })
 	public void run() {
+		ArrayList<String> textlist = new ArrayList<String>();
 		try	{
 			while(true) {
 				userdata = (ArrayList<String>)ois.readObject();
@@ -97,16 +100,34 @@ class Server_thread extends Thread{
 						userlogin();
 					}
 					else if (userdata.get(0).equals("initial")) {
+						InitialGameRoom room = null;
 						wuser.add(c);
-						System.out.println(((Client)wuser.get(0)).getUserid() + ((Client)wuser.get(0)).getUsername());
-						System.out.println("유저 입장");
-						while(true) {
+						if(wuser.size() > 3 && wuser.size() <= 4 || Timeout()) {
+							room = igm.createRoom(this, wuser);
+							System.out.println(((Client)wuser.get(0)).getUserid() + ((Client)wuser.get(0)).getUsername());
+							System.out.println("유저 입장");
+						}
+						int i = 0;
+						while(i < 5) {
+							i++;
 							try {
-								Thread.sleep(5000);
-								break;
-							} catch (InterruptedException e) {
+								textlist = (ArrayList<String>)ois.readObject();
+
+								if(textlist.get(0).equals("chat")) {
+									room.broadcast(textlist);
+
+								}else if(textlist.get(0).equals("answer")) {
+
+								}else if(textlist.get(0).equals("close")) {
+									room.exitUser(c);
+									soc.close();
+									break;
+								}else {
+
+								}
+							} catch (ClassNotFoundException e) {
 								e.printStackTrace();
-							}
+							} catch (IOException e) { e.printStackTrace();}
 						}break;
 					}
 					else{
@@ -117,7 +138,7 @@ class Server_thread extends Thread{
 		}
 		catch (ClassNotFoundException e){e.printStackTrace();}
 		catch (IOException|NullPointerException e) {
-			System.out.println("클라이언트 종료");
+			System.out.println("클라이언트 종료 2");
 			try {soc.close();}
 			catch (IOException e1) { e1.printStackTrace();}
 		}
@@ -182,9 +203,8 @@ class Server_thread extends Thread{
 	return true;
 	}
 
-	public void Send_userdata(Client c) {
+	public void Send_userdata(ArrayList<sendclient> c) {
 		try {
-			oos = new ObjectOutputStream(soc.getOutputStream());
 			oos.writeObject(c);
 			oos.flush();
 		}
@@ -193,11 +213,23 @@ class Server_thread extends Thread{
 		}
 	}
 
+	public void Send_msg(ArrayList<String> textlist) {
+		try {
+			oos.writeObject(textlist);
+			oos.flush();
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	@SuppressWarnings({ "unused" })
 	public void receive_chat()
 	{
-		ArrayList textlist = new ArrayList();
 		try {
-			textlist = (ArrayList)ois.readObject();
+			String textlist = "";
+			textlist = (String)ois.readObject();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) { e.printStackTrace();
