@@ -31,17 +31,10 @@ public class Database { private static java.sql.Connection conn = null;
     ps = null;
     try
     {
-<<<<<<< HEAD
       ps = conn.prepareStatement("insert userdata value(NULL, ?, ?, ?, 1)");
       ps.setString(1, UserName);
       ps.setString(2, UserID);
       ps.setString(3, UserPasswd);
-=======
-      ps = conn.prepareStatement("insert userdata set NULL, UserName=?, UserID=?, UserPasswd=?, 2");
-      ps.setString(1, UserID);
-      ps.setString(2, UserPasswd);
-      ps.setString(3, UserName);
->>>>>>> branch 'master' of https://github.com/plusalpha12/koreanQuiz.git
       
       ps.executeUpdate();
       
