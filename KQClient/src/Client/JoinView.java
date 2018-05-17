@@ -42,6 +42,7 @@ public class JoinView extends JFrame {
 
 	public JoinView() {
 		setDefaultCloseOperation(this.EXIT_ON_CLOSE);
+		setResizable(false);
 		dto = new UserDTO();
 		
 		setTitle("Join");
@@ -107,7 +108,7 @@ public class JoinView extends JFrame {
 				if(passwordField.getText().equals(passwordField_1.getText())) {
 					
 					join = new JoinProcess();
-					if(newUserid.getText().length() > 6	&& newUsername.getText().length() > 4 && passwordField.getText().length() > 6){
+					if(newUserid.getText().length() >= 6	&& newUsername.getText().length() >= 4 && passwordField.getText().length() >= 6){
 						dto.setNewUserId(newUserid.getText());
 						dto.setNewUsername(newUsername.getText());
 						dto.setNewUserpwd(passwordField.getText());

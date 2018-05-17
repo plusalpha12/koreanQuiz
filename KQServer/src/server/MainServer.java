@@ -68,6 +68,9 @@ class Server_thread extends Thread{
 	private UserDTO dto = null;
 	private Client c = null;
 
+	private ArrayList<String> coSentences = null; //Correct
+	private ArrayList<String> wrWords = null; //Wrong 
+
 	Server_thread(Socket soc, InitialGameManager igm, HashMap<String, Client> map, ArrayList<Client> w) {
 		this.soc = soc;
 		this.igm = igm;
@@ -92,7 +95,6 @@ class Server_thread extends Thread{
 		ArrayList<String> textlist = new ArrayList<String>();
 		String quiz = "";
 		InitialGameRoom room = null;
-		int i = 0;
 		try	{
 			while(true) {
 				System.out.println("선택 대기");
@@ -110,7 +112,7 @@ class Server_thread extends Thread{
 							if(wuser.size() < 4) wuser.add(c);	// 이니셜게임 대기열에 입장
 						}
 
-						if((wuser.size() >= 2 && wuser.size() <= 4) || Timeout()) {
+						if((wuser.size() >= 3 && wuser.size() <= 4) || Timeout()) {
 
 							synchronized(this) {
 								if(igm.getRoomlist().size() < 1) {
@@ -131,44 +133,71 @@ class Server_thread extends Thread{
 								textlist = (ArrayList<String>)ois.readObject();
 
 								if(textlist.get(0).equals("chat")) { // 채팅일 경우
-									System.out.println(textlist);
-									c.getRoom().broadcast(textlist);
+									int i;
+									String text = "";
 
-								}else if(textlist.get(0).equals("answer")) { // 답을 입력받은 경우
-									textlist.add("start");
-									if(i<10) {
-										quiz = Game.getRandomString(2);
-									}else {
-										quiz = Game.getRandomString(3);
-									}
-									textlist.add(quiz);
-									c.getRoom().broadcast(textlist);
+									text = textlist.get(2);
+									char[] ko = text.toCharArray();
+
+									if((text.length() == 2 || text.length() == 3)) { // 한글단어 체크
+										for(i = 0; i < ko.length; i++) {
+											if(ko[i] < '가' && ko[i] > '힣') {
+												c.getRoom().broadcast(textlist);
+												break;
+											}
+										}
+										if(i == ko.length) {
+											synchronized(this) {
+												c.getRoom().ans_check(ko, textlist, c);
+											}
+										}
+									}else
+										c.getRoom().broadcast(textlist);
+
+								}else if(textlist.get(0).equals("ready")) { // 준비를 누른 경우
+									c.ready_stat(true);
+									System.out.println(c.getUserid() + " 게임 준비");
+
+									c.getRoom().game_start();
+
+								}else if(textlist.get(0).equals("ready_cancle")) { // 준비를 취소할 경우
+									c.ready_stat(false);
+									System.out.println(c.getUserid() + " 게임 준비 취소");
 
 								}else if(textlist.get(0).equals("close")) { // 종료를 누른 경우
+									c.setScore(0);
+									c.setComboCount(true);
 									c.getRoom().Send_msg(textlist, c);
 									c.getRoom().exitUser(c);
 									System.out.println(c.getUserid() + " 게임 종료");
 									break;
-									
-								}else if(textlist.get(0).equals("ready")) { // 준비를 누른 경우
-									c.ready_stat(true);
-									System.out.println(c.getUserid() + " 게임 준비");
-									
-									c.getRoom().game_start();
-									
-								}else if(textlist.get(0).equals("ready_cancle")) { // 준비를 취소할 경우
-									c.ready_stat(false);
-									System.out.println(c.getUserid() + " 게임 준비 취소");
-									
+
 								}else {
 
 								}
+								textlist.clear();
 							} catch (ClassNotFoundException|NullPointerException e) {e.printStackTrace(); }
 							catch (SocketException e) { e.printStackTrace(); break;}
 						}
+						
+					}else if(userdata.get(0).equals("sentence")) {
+						coSentences = new ArrayList<String>(); //Correct
+						wrWords = new ArrayList<String>(); //Wrong 
+						
+						db.SelectSen(coSentences, wrWords);
+						
+						oos.writeObject(coSentences);
+						oos.flush();
+						
+						oos.writeObject(wrWords);
+						oos.flush();
+						
+						coSentences.clear();
+						wrWords.clear();
 					}
 				}
-				else{userdata.get(0).equals("sentence");}
+				else{
+					}
 			}
 		}
 		catch (ClassNotFoundException e){

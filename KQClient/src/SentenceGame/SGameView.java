@@ -1,119 +1,172 @@
 package SentenceGame;
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JSpinner;
-import javax.swing.*;
-import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Random;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import javax.swing.JProgressBar;
+import javax.swing.JTextField;
+import javax.swing.Timer;
+import javax.swing.border.EmptyBorder;
 
+public class SGameView {
 
+	public static JFrame jf = new JFrame();
+	private static JPanel contentPane;
+	//단어 버튼들
+	static JButton[] buttons;
+	//어떤 문장을 내보낼지 index 역할
+	static int chooseSentence;
+	//현재 맞는 문장
+	static String separtateWord;
+	//틀린 단어
+	static String wrongWord;
+	//단어버튼 시작 좌표
+	static int buttonX = 170;
+	static int buttonY = 194;
+	static JTextField textField;
+	static Timer timer;
+	static JProgressBar progressBar;
+	static int counter = 100;
+	//맞는 문장 리스트
+	static ArrayList<String> coSentences;
+	//틀린 단어 리스트
+	static ArrayList<String> wrWords;
 
-public class SGameView extends JFrame {
-
-	private JPanel contentPane;
-	int score;
-	int ClickNumber;
-	int ClickCounting;
-	int Level;
-	String SepartateWord;
-	private JTextField textField;
-
-
-	public SGameView() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 856, 586);
+	public SGameView(ArrayList<String> coSentences,  ArrayList<String> wrWords) {
+		this.coSentences = coSentences; this.wrWords = wrWords;
+		jf.setDefaultCloseOperation(jf.EXIT_ON_CLOSE);
+		jf.setBounds(100, 100, 856, 586);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
+		jf.setContentPane(contentPane);
 		contentPane.setLayout(null);
 
 		JLabel lblNewLabel = new JLabel("");
 		lblNewLabel.setBounds(361, 10, 73, 41);
 		contentPane.add(lblNewLabel);
 
+		//textField
 		textField = new JTextField();
 		textField.setBounds(76, 61, 691, 41);
 		contentPane.add(textField);
 		textField.setColumns(10);
 
-		JButton button_1 = new JButton("\uD55C");
-		button_1.setBounds(150, 194, 171, 73);
-		contentPane.add(button_1);
-
-		JButton button = new JButton("\uAE4D\uB450\uAE30");
-		button.setToolTipText("");
-		button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
+		//exitButton
+		JButton exitButton = new JButton("종료");
+		exitButton.setBounds(741, 0, 100, 50);
+		contentPane.add(exitButton);
+		exitButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
 			}
 		});
-		button.setBounds(333, 194, 176, 73);
-		contentPane.add(button);
-
-		JButton button_2 = new JButton("\uC8FC\uC138\uC694");
-		button_2.setBounds(521, 194, 164, 73);
-		contentPane.add(button_2);
-
-		JButton button_3 = new JButton("\uAE4D\uB69C\uAE30");
-		button_3.setBounds(150, 285, 171, 73);
-		contentPane.add(button_3);
-
-		JButton button_4 = new JButton("\uC811\uC2DC");
-		button_4.setBounds(333, 285, 176, 73);
-		contentPane.add(button_4);
-
-		JButton button_5 = new JButton("\uB354");
-		button_5.setBounds(521, 285, 164, 73);
-		contentPane.add(button_5);
-
-		setUndecorated(true);
-		setVisible(true);
-	}
-
-	public void PresentSentence() {
-
-	}
-
-	public class CountDown extends JFrame {
-		private JLabel label;
-
-		class MyThread extends Thread {
-			public void run() {
-				for (int i = 60; i >= 0; i--) {
-					try {
-						Thread.sleep(1000);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-					label.setText(i + "");
+		
+		//checkButton
+		JButton checkButton = new JButton("확인");
+		checkButton.setBounds(770, 61, 70, 41);
+		contentPane.add(checkButton);
+		checkButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				//정답 체크
+				if(textField.getText().trim().equals(separtateWord)){
+					JOptionPane.showMessageDialog(null, "정답입니다","정답입니다.",JOptionPane.INFORMATION_MESSAGE);
+					for(int j = 0; j<buttons.length; j++)
+						contentPane.remove(buttons[j]);
+					contentPane.repaint();
+					textField.setText("");
+					buttonX = 170;
+					buttonY = 194;
+					int chooseSen;
+					counter=101;
+					//이전 문장 현재 문장 비교 do-while문
+					do{
+						chooseSen = (int)(coSentences.size()*Math.random());
+					}while(chooseSentence==chooseSen);
+					chooseSentence = chooseSen;
+					setSentence(coSentences.get(chooseSentence), wrWords.get(chooseSentence));
+				}
+				//오답 체크
+				else{
+					JOptionPane.showMessageDialog(null, "오답입니다.","오답입니다.",JOptionPane.OK_OPTION);
+					textField.setText("");
 				}
 			}
-		}
+		});
 
-		public CountDown() {
-			setTitle("카운트다운");
-			setSize(250, 175);
-			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		//타이머 설정
+		progressBar = new JProgressBar(JProgressBar.HORIZONTAL, 0, 100);
+		progressBar.setValue(counter);
+		ActionListener listener = new ActionListener() {    
+			public void actionPerformed(ActionEvent ae) {
+				counter--;
+				progressBar.setValue(counter);
+				if (counter<1) {
+					JOptionPane.showMessageDialog(null, "시간 초과");
+					timer.stop();
+					System.exit(0);
+				} 
+			}
+		};
+		timer = new Timer(1000, listener);
+		timer.start();
+		progressBar.setBounds(0, 0, 164, 50);
+		contentPane.add(progressBar);
+		chooseSentence = (int)(coSentences.size()*Math.random());
+		setSentence(coSentences.get(chooseSentence), wrWords.get(chooseSentence));
+		jf.setVisible(true);
+	}
 
-			JPanel panel = new JPanel();
-			label = new JLabel("Start");
-			label.setFont(new Font("serif", Font.BOLD, 100));
-			panel.add(label);
-			add(panel);
-			(new MyThread()).start();
-			setVisible(true);
+	public static void setSentence(String sep, String wro){
+		separtateWord = sep; wrongWord = wro;
+		//wordButton
+		buttons = new JButton[separtateWord.split(" ").length+wrongWord.split(" ").length];
+		String totalWord = separtateWord+" "+wrongWord;
+		String [] totalArr = totalWord.split(" ");
+		totalArr = shuffle(totalArr);
+		for(int i = 0; i<buttons.length; i++){
+			buttons[i] = new JButton(totalArr[i]);
+			buttons[i].setBounds(buttonX, buttonY, 150, 50);
+			contentPane.add(buttons[i]);
+			buttons[i].addActionListener(new ActionListener(){
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					textField.setText(textField.getText()+" "+arg0.getActionCommand());
+				}
+			});
+			buttonX+=170;
+			//button newLine
+			if(i%3==2){
+				buttonX=170;
+				buttonY+=70;
+			}
 		}
+		jf.setVisible(true);
 
-		public void main(String[] args) {
-			new CountDown();
+	}
+
+
+	private static Random random;
+	public static String[] shuffle(String [] array) {
+		if (random == null) random = new Random();
+		int count = array.length;
+		for (int i = count; i > 1; i--) {
+			swap(array, i - 1, random.nextInt(i));
 		}
+		return array;
+	}
+	private static String[] swap(String[] array, int i, int j) {
+		String temp = array[i];
+		array[i] = array[j];
+		array[j] = temp;
+		return array;
 	}
 }

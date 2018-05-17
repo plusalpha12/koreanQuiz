@@ -24,6 +24,7 @@ public class IMenuView extends JFrame {
 	
 	public IMenuView(MainProcess main) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setResizable(false);
 		
 		this.main = main;
 		

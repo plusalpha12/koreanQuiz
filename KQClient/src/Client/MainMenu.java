@@ -51,7 +51,7 @@ public class MainMenu extends JFrame {
 		button_start.setFont(new Font("휴먼편지체", Font.PLAIN, 35));
 		button_start.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new SGameView();
+				main.SentenceGameBack();
 			}
 		});
 

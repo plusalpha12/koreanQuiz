@@ -42,12 +42,14 @@ public class IGameView extends JFrame {
 
 	JLabel userid[] = new JLabel[4];
 	JLabel username[] = new JLabel[4];
+	JLabel score[] = new JLabel[4];
 	JLabel userline[] = new JLabel[4];
 
 	public IGameView(MainProcess main){
 
 
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setResizable(false);
 		this.main = main;
 		JPanel userPanel[] = new JPanel[4];
 
@@ -67,13 +69,13 @@ public class IGameView extends JFrame {
 		UserPanel2.setLayout(new GridLayout(2,1));
 
 		userPanel[0] = new JPanel();
-		userPanel[0].setLayout(new GridLayout(3,1));
+		userPanel[0].setLayout(new GridLayout(4,1));
 		userPanel[1] = new JPanel();
-		userPanel[1].setLayout(new GridLayout(3,1));
+		userPanel[1].setLayout(new GridLayout(4,1));
 		userPanel[2] = new JPanel();
-		userPanel[2].setLayout(new GridLayout(3,1));
+		userPanel[2].setLayout(new GridLayout(4,1));
 		userPanel[3] = new JPanel();
-		userPanel[3].setLayout(new GridLayout(3,1));
+		userPanel[3].setLayout(new GridLayout(4,1));
 
 
 		chatlog = new JTextArea();
@@ -89,6 +91,7 @@ public class IGameView extends JFrame {
 					if(!textField.getText().equals("")) {
 						main.send_chat(textField.getText());
 						textField.setText("");
+						textField.requestFocus();
 					}
 				}
 			}
@@ -116,11 +119,15 @@ public class IGameView extends JFrame {
 			username[i] = new JLabel("");
 			username[i].setHorizontalAlignment(SwingConstants.CENTER);
 			username[i].setFont(new Font("휴먼편지체", Font.PLAIN, 15));
+			score[i] = new JLabel("");
+			score[i].setHorizontalAlignment(SwingConstants.CENTER);
+			score[i].setFont(new Font("휴먼편지체", Font.PLAIN, 15));
 			userline[i] = new JLabel("            ");
 			userline[i].setHorizontalAlignment(SwingConstants.CENTER);
 			userline[i].setFont(new Font("휴먼편지체", Font.PLAIN, 15));
 			userPanel[i].add(userid[i]);
 			userPanel[i].add(username[i]);
+			userPanel[i].add(score[i]);
 			userPanel[i].add(userline[i]);
 		}
 
@@ -210,24 +217,19 @@ public class IGameView extends JFrame {
 		chatlog.append(text);
 	}
 	public void set_quiz(String text) {
-		/*
-		for(int i = 5; i > 0; i--) {
-			JOptionPane.showMessageDialog(frame, i);
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-		*/
 		quizlabel.setText(text);
 		quizlabel.setFont(new Font("휴먼편지체", Font.BOLD, 50));
-		
 	}
 	public void set_userdata(int i, sendclient c) {
-		System.out.println("test");
 		userid[i].setText(c.getUserid());
-		username[i].setText(c.getUsername());
+		username[i].setText(c.getUsername()); 
+	}
+	public void set_userscore(String i, String userId) {
+		for(int j = 0; j < 4; j++) {
+			if(userid[j].getText().equals(userId)) {
+				score[j].setText(i);
+			}
+		}
 	}
 	public void game_start(String text) {
 		ready.setVisible(false);
