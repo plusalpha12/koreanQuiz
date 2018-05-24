@@ -32,7 +32,7 @@ public class Database {
 		ps = null;
 		try
 		{
-			ps = conn.prepareStatement("insert userdata value(NULL, ?, ?, ?, 1)");
+			ps = conn.prepareStatement("insert into userdata value(NULL, ?, ?, ?, 1)");
 			ps.setString(1, UserName);
 			ps.setString(2, UserID);
 			ps.setString(3, UserPasswd);
@@ -42,11 +42,7 @@ public class Database {
 			ps.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-
-
-			if (ps != null) try { ps.close(); } catch (SQLException localSQLException1) {} } finally { if (ps != null) try { ps.close();
-			} catch (SQLException localSQLException2) {}
-			}
+		}
 	}
 
 	public boolean IdCheck(String id) {
@@ -66,18 +62,7 @@ public class Database {
 		} catch (SQLException e) {
 			System.out.println("db testfailed");
 			e.printStackTrace();
-
-
-			if (rs != null) try { rs.close(); } catch (SQLException localSQLException1) {}
-			if (ps != null) try { ps.close();
-			}
-			catch (SQLException localSQLException2) {}
 		}
-		finally
-		{
-			if (rs != null) try { rs.close(); } catch (SQLException localSQLException3) {}
-			if (ps != null) try { ps.close();
-			} catch (SQLException localSQLException4) {} }
 		return idcheck;
 	}
 
@@ -97,18 +82,7 @@ public class Database {
 	} catch (SQLException e) {
 		System.out.println("db testfailed");
 		e.printStackTrace();
-
-
-		if (rs != null) try { rs.close(); } catch (SQLException localSQLException1) {}
-		if (ps != null) try { ps.close();
-		}
-		catch (SQLException localSQLException2) {}
 	}
-	finally
-	{
-		if (rs != null) try { rs.close(); } catch (SQLException localSQLException3) {}
-		if (ps != null) try { ps.close();
-		} catch (SQLException localSQLException4) {} }
 	return namecheck;
 	}
 
@@ -133,19 +107,44 @@ public class Database {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-
-
-			if (rs != null) try { rs.close(); } catch (SQLException localSQLException1) {}
-			if (ps != null) try { ps.close();
-			}
-			catch (SQLException localSQLException2) {}
 		}
-		finally
-		{
-			if (rs != null) try { rs.close(); } catch (SQLException localSQLException3) {}
-			if (ps != null) try { ps.close();
-			} catch (SQLException localSQLException4) {} }
 		return logincheck;
+	}
+
+	public void InsertWord(String id, ArrayList<String> wordlist) {
+		ps = null;
+		System.out.println(id + " " + wordlist);
+		try {
+			ps = conn.prepareStatement("insert into id_" + id + " value(?, NULL)");
+			
+			for(String word : wordlist) {
+				ps.setString(1, word);
+				ps.executeUpdate();
+			}
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public ArrayList<String> getWord(String id) {
+		rs = null;
+		ps = null;
+		ArrayList<String> wordlist = new ArrayList<String>();
+		try
+		{
+			ps = conn.prepareStatement("select word from id_" + id);
+			rs = ps.executeQuery();
+			
+			while(rs.next()) {
+				wordlist.add(rs.getString("word"));
+			}
+			if(wordlist.size()<1)
+				wordlist.set(0, "null");
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return wordlist;
 	}
 
 	public void SelectSen(ArrayList<String> co, ArrayList<String> wr) {
@@ -154,21 +153,22 @@ public class Database {
 		try {
 			ps = conn.prepareStatement("select * from sentence");
 			rs = ps.executeQuery();
-			
+
 			while(rs.next()){
 				co.add(rs.getString(1));
 				wr.add(rs.getString(2));
 			}
-			
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	protected void finalize() throws Throwable
 	{
+		rs.close();
+		ps.close();
 		conn.close();
-
 		super.finalize();
 	}
 }

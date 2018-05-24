@@ -65,6 +65,7 @@ class Server_thread extends Thread{
 	private ObjectOutputStream oos = null;
 
 	private ArrayList<String> userdata = null;
+	private ArrayList<String> wordlist = null;
 	private UserDTO dto = null;
 	private Client c = null;
 
@@ -98,16 +99,25 @@ class Server_thread extends Thread{
 		try	{
 			while(true) {
 				System.out.println("선택 대기");
+				System.out.println("선택 대기2");
 				userdata = (ArrayList<String>)ois.readObject();
+				System.out.println(userdata);
 
 				if (userdata.size() > 0)
 				{
-					if (userdata.get(0).equals("userjoin")) {userjoin();}
+					if (userdata.get(0).equals("userjoin")) {
+						userjoin();
+						userdata.clear();
+						}
 
-					else if (userdata.get(0).equals("userlogin")) {userlogin();}
+					else if (userdata.get(0).equals("userlogin")) {
+						userlogin();
+						userdata.clear();
+						}
 
 					else if (userdata.get(0).equals("initial")) {
-
+						
+						userdata.clear();
 						synchronized(wuser) {
 							if(wuser.size() < 4) wuser.add(c);	// 이니셜게임 대기열에 입장
 						}
@@ -167,9 +177,11 @@ class Server_thread extends Thread{
 								}else if(textlist.get(0).equals("close")) { // 종료를 누른 경우
 									c.setScore(0);
 									c.setComboCount(true);
+									save_answer(dto.getUserId());
 									c.getRoom().Send_msg(textlist, c);
 									c.getRoom().exitUser(c);
 									System.out.println(c.getUserid() + " 게임 종료");
+									textlist.clear();
 									break;
 
 								}else {
@@ -181,6 +193,7 @@ class Server_thread extends Thread{
 						}
 						
 					}else if(userdata.get(0).equals("sentence")) {
+						userdata.clear();
 						coSentences = new ArrayList<String>(); //Correct
 						wrWords = new ArrayList<String>(); //Wrong 
 						
@@ -194,6 +207,14 @@ class Server_thread extends Thread{
 						
 						coSentences.clear();
 						wrWords.clear();
+						
+					}else if(userdata.get(0).equals("achieve")) {
+						System.out.println("test");
+						userdata.clear();
+						wordlist = new ArrayList<String>();
+						wordlist = db.getWord(dto.getUserId());
+						oos.writeObject(wordlist);
+						oos.flush();
 					}
 				}
 				else{
@@ -290,5 +311,10 @@ class Server_thread extends Thread{
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException|NullPointerException e) { e.printStackTrace(); }
+	}
+	
+	public void save_answer(String userid) {
+		wordlist = c.getRoom().getWordList();
+		db.InsertWord(userid, wordlist);
 	}
 }

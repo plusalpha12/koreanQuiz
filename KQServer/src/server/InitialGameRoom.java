@@ -15,6 +15,7 @@ public class InitialGameRoom {
 	private sendclient user = null;
 	private int roomnum = 0;
 	private ArrayList<String> textlist = new ArrayList<String>();
+	private ArrayList<String> answer = new ArrayList<String>();
 	private String quiz = "";
 	public static char[] Chosung = { 0x3131, 0x3132, 0x3134, 0x3137, 0x3138,
 			0x3139, 0x3141, 0x3142, 0x3143, 0x3145, 0x3146, 0x3147, 0x3148,
@@ -68,8 +69,7 @@ public class InitialGameRoom {
 		userlist = null;
 	}
 
-	public void broadcast(ArrayList<String> text) {		
-		System.out.println(text);
+	public void broadcast(ArrayList<String> text) {	
 
 		if(text.get(0).equals("join")) { // 게임 실행시
 			for (Client client : userlist) {
@@ -85,13 +85,7 @@ public class InitialGameRoom {
 				Send_msg(text, client);
 				i++;
 			}
-		}else if (text.get(0).equals("start")){ // 게임이 시작되는 경우
-			quiz = Game.getRandomString(2);
-			text.add(quiz);
-			for (Client client : userlist) {
-				Send_msg(text, client);
-			}
-		}else if (text.get(0).equals("quiz")){ // 정답인경우
+		}else if (text.get(0).equals("start") || text.get(0).equals("quiz")){ // 게임이 시작되는 경우
 			quiz = Game.getRandomString(2);
 			text.add(quiz);
 			for (Client client : userlist) {
@@ -155,6 +149,7 @@ public class InitialGameRoom {
 		}
 		if(cho.toString().equals(quiz)) {
 			if(XmlParser.xmlParsing(textlist.get(2))) {	// 정답일 경우
+				answer.add(textlist.get(2));
 				for(Client client : userlist) {
 					if(client.getComboCount() != 0) {
 						if(client == c) {
@@ -182,6 +177,9 @@ public class InitialGameRoom {
 			broadcast(textlist);
 		}
 		textlist.clear();
+	}
+	public ArrayList<String> getWordList(){
+		return answer;
 	}
 
 }
