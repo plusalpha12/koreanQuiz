@@ -6,6 +6,10 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
+import InitialGame.AchieveView;
 import InitialGame.IGameView;
 import SentenceGame.SGameView;
 import serial.sendclient;
@@ -22,6 +26,7 @@ public class MainProcess{
 	private IGameView igame = null;
 	private SGameView sgame = null;
 	private UserDTO dto = null;
+	private ArrayList<String> textlist = new ArrayList<String>();
 	ArrayList<String> text = new ArrayList<String>();
 	ArrayList<String> coSentences = null; //Correct
 	ArrayList<String> wrWords = null; //Wrong 
@@ -91,7 +96,6 @@ public class MainProcess{
 	public void InitialGameBack() {
 		int i = 0;
 		igame = new IGameView(this);
-		text = new ArrayList<String>();
 		ClientList = new ArrayList<sendclient>();
 		Receive_msg_thread rmt = new Receive_msg_thread(igame, socket);
 
@@ -124,6 +128,32 @@ public class MainProcess{
 		text.clear();
 	}
 	
+	public void AchieveBack() {
+		JFrame frame = new JFrame();
+		
+		ArrayList<String> wordlist = new ArrayList<String>();
+		text = new ArrayList<String>();
+
+		try {
+			text.add("achieve");
+			oos.writeObject(text);
+			oos.flush();
+
+			System.out.println("업적 전송 완료");
+
+			try {
+				wordlist = (ArrayList<String>)ois.readObject();
+				
+			} catch (ClassNotFoundException e) {e.printStackTrace();}
+		} catch (IOException e1) {e1.printStackTrace();}
+		text.clear();
+		if(wordlist.get(0).equals("null")) {
+			JOptionPane.showMessageDialog(frame, "등록된 단어가 없습니다.");
+		}else {
+			AchieveView achi = new AchieveView(wordlist);
+		}
+	}
+	
 	@SuppressWarnings("unchecked")
 	public void SentenceGameBack() {
 
@@ -150,7 +180,7 @@ public class MainProcess{
 	}
 
 	public void send_chat(String text) {
-		ArrayList<String> textlist = new ArrayList<String>();
+		textlist = new ArrayList<String>();
 
 		if(text.equals("close")) {
 			textlist.add(text);
@@ -182,7 +212,7 @@ public class MainProcess{
 		}
 	}
 	public void close_user() {
-		ArrayList<String> textlist = new ArrayList<String>();
+		textlist = new ArrayList<String>();
 		textlist.add("close");
 		textlist.add(dto.getUserId());
 
@@ -196,6 +226,7 @@ public class MainProcess{
 			e.printStackTrace();
 		}
 
+		textlist.clear();
 	}
 	public void exit() {
 		if (ois != null) try { ois.close(); } catch(IOException e) {}

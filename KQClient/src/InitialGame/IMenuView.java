@@ -6,9 +6,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import Client.LoginView;
 import Client.MainProcess;
-import Client.MainMenu;
 
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
@@ -28,8 +26,9 @@ public class IMenuView extends JFrame {
 		
 		this.main = main;
 		
-		setSize(460, 300);
+		setSize(460, 400);
 		setLocationRelativeTo(null);
+		setResizable(false);
 		
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(20, 50, 20, 50));
@@ -68,8 +67,18 @@ public class IMenuView extends JFrame {
 			}
 		});
 		
+		JButton button_achievement = new JButton("백과사전");
+		button_achievement.setBounds(120, 200, 210, 40);
+		panel.add(button_achievement);
+		button_achievement.setFont(new Font("휴먼편지체", Font.PLAIN, 18));
+		button_achievement.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				main.AchieveBack();
+			}
+		});
+		
 		JButton button_exit = new JButton("종료하기");
-		button_exit.setBounds(120, 200, 210, 40);
+		button_exit.setBounds(120, 255, 210, 40);
 		panel.add(button_exit);
 		button_exit.setFont(new Font("휴먼편지체", Font.PLAIN, 18));
 		button_exit.addActionListener(new ActionListener() {

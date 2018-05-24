@@ -150,7 +150,6 @@ public class IGameView extends JFrame {
 		button_exit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				main.send_chat("close");
-				System.out.println("게임 종료");
 				dthread.interrupt();
 				dispose();
 			}
