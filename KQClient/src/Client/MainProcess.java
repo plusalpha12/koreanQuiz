@@ -35,7 +35,7 @@ public class MainProcess{
 		try {
 			//222.238.181.109
 			//192.168.35.121
-			socket = new Socket("192.168.35.121", 6060);
+			socket = new Socket("222.238.181.109", 6060);
 			System.out.println("서버 연결");
 
 			oos = new ObjectOutputStream(socket.getOutputStream());
