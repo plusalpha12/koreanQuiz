@@ -22,7 +22,7 @@ public class AchieveView extends JFrame {
 	private JPanel contentPane;
 	private JLabel wordlabel[] = null;
 	
-	public AchieveView(ArrayList<String> wordlist) {
+	public AchieveView(MainProcess main, ArrayList<String> wordlist) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
 		int i = 0;
@@ -69,6 +69,7 @@ public class AchieveView extends JFrame {
 		button_exit.setFont(new Font("»ﬁ∏’∆Ì¡ˆ√º", Font.PLAIN, 18));
 		button_exit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				new IMenuView(main);
 				dispose();
 			}
 		});

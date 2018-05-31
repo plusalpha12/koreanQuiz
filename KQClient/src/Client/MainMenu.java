@@ -52,6 +52,7 @@ public class MainMenu extends JFrame {
 		button_start.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				main.SentenceGameBack();
+				dispose();
 			}
 		});
 
@@ -61,6 +62,8 @@ public class MainMenu extends JFrame {
 		button_logout.setFont(new Font("휴먼편지체", Font.PLAIN, 25));
 		button_logout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				main.exit();
+				new LoginView();
 				dispose();
 			}
 		});
