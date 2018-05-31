@@ -38,7 +38,7 @@ public class AchieveView extends JFrame {
 		
 		contentPane.setLayout(null);
 		JPanel panel = new JPanel();
-		panel.setBounds(0, 0, 450, 300);
+		panel.setBounds(0, 0, 600, 600);
 		contentPane.add(panel);
 		panel.setLayout(null);
 		

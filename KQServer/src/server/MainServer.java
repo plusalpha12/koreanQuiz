@@ -14,9 +14,9 @@ import java.io.ObjectOutputStream;
 import java.net.SocketException;
 
 public class MainServer{
-	private static InitialGameManager igm = null;
-	private static HashMap<String, Client> map = null;
-	private static ArrayList<Client> wuser = null;
+	private InitialGameManager igm = null;
+	private HashMap<String, Client> map = null;
+	private ArrayList<Client> wuser = null;
 	private ServerSocket server = null;
 	private Socket client = null;
 
@@ -58,7 +58,6 @@ class Server_thread extends Thread{
 	private InitialGameManager igm = null;
 	private HashMap<String, Client> userlist = null;
 	private static ArrayList<Client> wuser = null;
-	private static ArrayList<Client> guser = null;
 	private Database db = null;
 
 	private ObjectInputStream ois = null;
@@ -81,8 +80,9 @@ class Server_thread extends Thread{
 		db = new Database(dto);
 		try {
 			System.out.println("클라이언트 연결");
-			ois = new ObjectInputStream(soc.getInputStream());
 			oos = new ObjectOutputStream(soc.getOutputStream());
+			ois = new ObjectInputStream(soc.getInputStream());
+			System.out.println("클라이언트 연결 성공");
 		}
 		catch (SocketException|NullPointerException se) {
 			System.out.println("클라이언트 종료 ");
@@ -99,7 +99,6 @@ class Server_thread extends Thread{
 		try	{
 			while(true) {
 				System.out.println("선택 대기");
-				System.out.println("선택 대기2");
 				userdata = (ArrayList<String>)ois.readObject();
 				System.out.println(userdata);
 
@@ -231,6 +230,16 @@ class Server_thread extends Thread{
 			System.out.println("클라이언트 종료 2");
 			try {soc.close();}
 			catch (IOException e1) { e1.printStackTrace();}
+		}
+		finally {
+			try {
+				oos.close();
+				ois.close();
+				if(soc != null) try{soc.close();} catch(IOException e){}
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

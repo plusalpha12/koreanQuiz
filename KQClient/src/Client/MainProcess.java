@@ -22,7 +22,6 @@ public class MainProcess{
 	private static ObjectOutputStream oos = null;
 	private static ObjectInputStream ois = null;
 	private String logincheck = null;
-	private Client client = null;
 	private IGameView igame = null;
 	private SGameView sgame = null;
 	private UserDTO dto = null;
@@ -36,7 +35,7 @@ public class MainProcess{
 		try {
 			//222.238.181.109
 			//192.168.35.121
-			socket = new Socket("222.238.181.109", 6060);
+			socket = new Socket("192.168.35.121", 6060);
 			System.out.println("서버 연결");
 
 			oos = new ObjectOutputStream(socket.getOutputStream());
@@ -86,9 +85,11 @@ public class MainProcess{
 
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
+				if(socket != null) try{socket.close();} catch(IOException e1){}
 			}
 		} catch (IOException e1) {
 			e1.printStackTrace();
+			if(socket != null) try{socket.close();} catch(IOException e){}
 		}
 	}
 
@@ -98,6 +99,7 @@ public class MainProcess{
 		igame = new IGameView(this);
 		ClientList = new ArrayList<sendclient>();
 		Receive_msg_thread rmt = new Receive_msg_thread(igame, socket);
+		text = new ArrayList<String>();
 
 		try {
 			text.add(0, "initial");
@@ -159,6 +161,7 @@ public class MainProcess{
 
 		coSentences = new ArrayList<String>(); //Correct
 		wrWords = new ArrayList<String>(); //Wrong 
+		text = new ArrayList<String>();
 		
 		try {
 			text.add(0, "sentence");
@@ -228,6 +231,7 @@ public class MainProcess{
 
 		textlist.clear();
 	}
+	
 	public void exit() {
 		if (ois != null) try { ois.close(); } catch(IOException e) {}
 		if (oos != null) try { oos.close(); } catch(IOException e) {}

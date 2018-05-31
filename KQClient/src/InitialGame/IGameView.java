@@ -54,7 +54,6 @@ public class IGameView extends JFrame {
 		JPanel userPanel[] = new JPanel[4];
 
 		setSize(600, 600);
-		setResizable(false);
 		setLocationRelativeTo(null);
 		getContentPane().setLayout(new BorderLayout(5,5));
 
