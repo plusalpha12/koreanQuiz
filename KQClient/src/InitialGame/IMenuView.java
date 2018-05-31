@@ -6,6 +6,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import Client.MainMenu;
 import Client.MainProcess;
 
 import javax.swing.JButton;
@@ -53,7 +54,8 @@ public class IMenuView extends JFrame {
 		button_single.setFont(new Font("휴먼편지체", Font.PLAIN, 18));
 		button_single.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				main.InitialGameBack();
+				main.InitialGameBack(true);
+				dispose();
 			}
 		});
 		
@@ -63,7 +65,8 @@ public class IMenuView extends JFrame {
 		button_together.setFont(new Font("휴먼편지체", Font.PLAIN, 18));
 		button_together.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				main.InitialGameBack();
+				main.InitialGameBack(false);
+				dispose();
 			}
 		});
 		
@@ -74,16 +77,17 @@ public class IMenuView extends JFrame {
 		button_achievement.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				main.AchieveBack();
+				dispose();
 			}
 		});
 		
-		JButton button_exit = new JButton("종료하기");
+		JButton button_exit = new JButton("놀이 선택");
 		button_exit.setBounds(120, 255, 210, 40);
 		panel.add(button_exit);
 		button_exit.setFont(new Font("휴먼편지체", Font.PLAIN, 18));
 		button_exit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				main.exit();
+				new MainMenu(main);
 				dispose();
 			}
 		});

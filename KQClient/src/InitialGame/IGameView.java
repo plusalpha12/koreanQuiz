@@ -24,7 +24,6 @@ import javax.swing.SwingUtilities;
 import Client.MainProcess;
 import serial.sendclient;
 
-
 public class IGameView extends JFrame {
 
 	protected JTextField textField;
@@ -148,6 +147,7 @@ public class IGameView extends JFrame {
 		button_exit.setFont(new Font("»ﬁ∏’∆Ì¡ˆ√º", Font.PLAIN, 18));
 		button_exit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				new IMenuView(main);
 				main.send_chat("close");
 				dthread.interrupt();
 				dispose();
@@ -205,8 +205,6 @@ public class IGameView extends JFrame {
 		UserPanel2.add(userPanel[1]);
 		UserPanel2.add(userPanel[3]);
 
-		
-		setUndecorated(true);
 		setVisible(true);
 
 		textField.requestFocus();

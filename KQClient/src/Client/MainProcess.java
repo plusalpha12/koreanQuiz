@@ -35,7 +35,7 @@ public class MainProcess{
 		try {
 			//222.238.181.109
 			//192.168.35.121
-			socket = new Socket("222.238.181.109", 6060);
+			socket = new Socket("192.168.35.121", 6060);
 			System.out.println("서버 연결");
 
 			oos = new ObjectOutputStream(socket.getOutputStream());
@@ -94,7 +94,7 @@ public class MainProcess{
 	}
 
 	//이니셜 게임 백그라운드
-	public void InitialGameBack() {
+	public void InitialGameBack(boolean single) {
 		int i = 0;
 		igame = new IGameView(this);
 		ClientList = new ArrayList<sendclient>();
@@ -102,7 +102,10 @@ public class MainProcess{
 		text = new ArrayList<String>();
 
 		try {
-			text.add(0, "initial");
+			if(single)
+				text.add(0, "initial_single");
+			else
+				text.add(0, "initial");
 			oos.writeObject(text);
 			oos.flush();
 
@@ -129,10 +132,10 @@ public class MainProcess{
 		} catch (IOException e1) {e1.printStackTrace();}
 		text.clear();
 	}
-	
+
 	public void AchieveBack() {
 		JFrame frame = new JFrame();
-		
+
 		ArrayList<String> wordlist = new ArrayList<String>();
 		text = new ArrayList<String>();
 
@@ -145,24 +148,24 @@ public class MainProcess{
 
 			try {
 				wordlist = (ArrayList<String>)ois.readObject();
-				
+
 			} catch (ClassNotFoundException e) {e.printStackTrace();}
 		} catch (IOException e1) {e1.printStackTrace();}
 		text.clear();
 		if(wordlist.get(0).equals("null")) {
 			JOptionPane.showMessageDialog(frame, "등록된 단어가 없습니다.");
 		}else {
-			AchieveView achi = new AchieveView(wordlist);
+			AchieveView achi = new AchieveView(this, wordlist);
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public void SentenceGameBack() {
 
 		coSentences = new ArrayList<String>(); //Correct
 		wrWords = new ArrayList<String>(); //Wrong 
 		text = new ArrayList<String>();
-		
+
 		try {
 			text.add(0, "sentence");
 			oos.writeObject(text);
@@ -177,7 +180,7 @@ public class MainProcess{
 
 			} catch (ClassNotFoundException e) {e.printStackTrace();}
 		} catch (IOException e1) {e1.printStackTrace();}
-		
+
 		sgame = new SGameView(coSentences, wrWords);
 		text.clear();
 	}
@@ -214,6 +217,7 @@ public class MainProcess{
 			} catch (IOException e) {e.printStackTrace();}
 		}
 	}
+	
 	public void close_user() {
 		textlist = new ArrayList<String>();
 		textlist.add("close");
@@ -231,7 +235,7 @@ public class MainProcess{
 
 		textlist.clear();
 	}
-	
+
 	public void exit() {
 		if (ois != null) try { ois.close(); } catch(IOException e) {}
 		if (oos != null) try { oos.close(); } catch(IOException e) {}
