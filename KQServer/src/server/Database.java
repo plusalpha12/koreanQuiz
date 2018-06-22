@@ -111,14 +111,15 @@ public class Database {
 		return logincheck;
 	}
 
-	public void InsertWord(String id, ArrayList<String> wordlist) {
+	public void InsertWord(String id, ArrayList<String> wordlist, ArrayList<String> cho, ArrayList<String> cholist) {
 		ps = null;
-		System.out.println(id + " " + wordlist);
 		try {
-			ps = conn.prepareStatement("insert into id_" + id + " value(?, NULL)");
+			ps = conn.prepareStatement("insert into id_" + id + " value(?, ?, ?)");
 			
-			for(String word : wordlist) {
-				ps.setString(1, word);
+			for(int i = 0; i<wordlist.size() ;i++) {
+				ps.setString(1, wordlist.get(i));
+				ps.setString(2, cho.get(i));
+				ps.setString(3, cholist.get(i));
 				ps.executeUpdate();
 			}
 		}catch(SQLException e) {
@@ -126,20 +127,21 @@ public class Database {
 		}
 	}
 
-	public ArrayList<String> getWord(String id) {
+	public ArrayList<String> getWord(String id, String cho) {
 		rs = null;
 		ps = null;
 		ArrayList<String> wordlist = new ArrayList<String>();
 		try
 		{
-			ps = conn.prepareStatement("select word from id_" + id);
+			ps = conn.prepareStatement("select word from id_" + id + " where cho=?");
+			ps.setString(1, cho);
 			rs = ps.executeQuery();
 			
 			while(rs.next()) {
 				wordlist.add(rs.getString("word"));
 			}
 			if(wordlist.size()<1)
-				wordlist.set(0, "null");
+				wordlist.add("null");
 
 		} catch (SQLException e) {
 			e.printStackTrace();

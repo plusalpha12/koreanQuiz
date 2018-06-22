@@ -97,8 +97,8 @@ class Server_thread extends Thread{
 		try	{
 			while(true) {
 				System.out.println("선택 대기");
-				userdata = (ArrayList<String>)ois.readObject();
 
+				userdata = (ArrayList<String>)ois.readObject();
 				System.out.println(userdata);
 
 				if (userdata.size() > 0){
@@ -137,27 +137,27 @@ class Server_thread extends Thread{
 						}
 						InitialGame(room);
 					}
-					
+
 					else if(userdata.get(0).equals("initial_single")) {
 						userdata.clear();
 						InitialGameRoom room = null;
-						
+
 						wuser.add(c);
-						
+
 						if(igm.getRoomlist().size() < 1) {
 							System.out.println("유저 접속");
 							room = igm.createRoom(wuser);
 							wuser.clear();
-							
+
 						}else if(igm.getRoomlist().size() >= 1 && c.getRoom() == null) {
 							System.out.println("유저 접속2");
 							room = igm.createRoom(wuser);
 							wuser.clear();
-							
+
 						}else {
 							System.out.println("이미 방에 있습니다.");
 						}
-						
+
 						InitialGame(room);
 					}
 
@@ -178,12 +178,26 @@ class Server_thread extends Thread{
 						wrWords.clear();
 
 					}else if(userdata.get(0).equals("achieve")) {
-						System.out.println("test");
 						userdata.clear();
 						wordlist = new ArrayList<String>();
-						wordlist = db.getWord(dto.getUserId());
-						oos.writeObject(wordlist);
-						oos.flush();
+						while(true) {
+							try {
+								ArrayList<String> text = null;
+								text = (ArrayList<String>)ois.readObject();
+								System.out.println(text + "업적 테스트");
+
+								if(text.get(0) == "close") {
+									break;
+								}
+								System.out.println("업적 테스트");
+								wordlist = db.getWord(dto.getUserId(), text.get(0));
+								oos.writeObject(wordlist);
+								oos.flush();
+
+							}catch(IOException|NullPointerException e) {
+								break;
+							}
+						}
 					}
 				}
 				else{}
@@ -322,8 +336,13 @@ class Server_thread extends Thread{
 
 					}
 					textlist.clear();
-				} catch (ClassNotFoundException|NullPointerException e) {e.printStackTrace(); }
-			} catch (IOException e) {e.printStackTrace();}
+				} catch (ClassNotFoundException|NullPointerException e) {
+					e.printStackTrace(); 
+					break;
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+				break;}
 		}
 	}
 
@@ -351,7 +370,12 @@ class Server_thread extends Thread{
 	}
 
 	public void save_answer(String userid) {
+		ArrayList<String> cholist = null;
+		ArrayList<String> cho = null;
+
 		wordlist = c.getRoom().getWordList();
-		db.InsertWord(userid, wordlist);
+		cho = c.getRoom().getChosung();
+		cholist = c.getRoom().getChosung2();
+		db.InsertWord(userid, wordlist,cho,cholist);
 	}
 }

@@ -16,6 +16,8 @@ public class InitialGameRoom {
 	private int roomnum = 0;
 	private ArrayList<String> textlist = new ArrayList<String>();
 	private ArrayList<String> answer = new ArrayList<String>();
+	private ArrayList<String> chosung2 = new ArrayList<String>();
+	private ArrayList<String> chosung = new ArrayList<String>();
 	private String quiz = "";
 	public static char[] Chosung = { 0x3131, 0x3132, 0x3134, 0x3137, 0x3138,
 			0x3139, 0x3141, 0x3142, 0x3143, 0x3145, 0x3146, 0x3147, 0x3148,
@@ -46,7 +48,6 @@ public class InitialGameRoom {
 
 		textlist.add("join");
 		broadcast(textlist);
-		System.out.println("À¯Àú ÀÔÀå Àü´Þ");
 		textlist.clear();
 	}
 
@@ -71,28 +72,28 @@ public class InitialGameRoom {
 
 	public void broadcast(ArrayList<String> text) {	
 
-		if(text.get(0).equals("join")) { // °ÔÀÓ ½ÇÇà½Ã
+		if(text.get(0).equals("join")) { //
 			for (Client client : userlist) {
-				text.add(client.getUsername() + "´ÔÀÌ ÀÔÀåÇÏ¼Ì½À´Ï´Ù.");
+				text.add(client.getUsername() + "ë‹˜ê»˜ì„œ ìž…ìž¥í•˜ì…¨ìŠµë‹ˆë‹¤.");
 			}
-			for(Client client : userlist) { // ¹æ ³»ÀÇ ¸ðµç À¯Àú¿¡°Ô Àü¼Û
+			for(Client client : userlist) { //
 				Send_msg(text, client);
 			}
-		}else if(text.get(0).equals("chat")){ // Ã¤ÆÃÀÌ ÀÔ·ÂµÇ¾úÀ» °æ¿ì
+		}else if(text.get(0).equals("chat")){ //
 			int i = 0;
 			for(Client client : userlist) {
 				System.out.println(i + " " + client.getSocket());
 				Send_msg(text, client);
 				i++;
 			}
-		}else if (text.get(0).equals("start") || text.get(0).equals("quiz")){ // °ÔÀÓÀÌ ½ÃÀÛµÇ´Â °æ¿ì
+		}else if (text.get(0).equals("start") || text.get(0).equals("quiz")){ // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ÛµÇ´ï¿½ ï¿½ï¿½ï¿½
 			quiz = Game.getRandomString(2);
 			text.add(quiz);
 			for (Client client : userlist) {
 				Send_msg(text, client);
 			}
 		}
-		else if (text.get(0).equals("exit")){ // À¯Àú°¡ Á¾·áÇßÀ» °æ¿ì
+		else if (text.get(0).equals("exit")){ //
 			for (Client client : userlist) {
 				Send_msg(text, client);
 			}
@@ -112,7 +113,7 @@ public class InitialGameRoom {
 		}
 	}
 
-	public void game_start() { // Å¬¶óÀÌ¾ðÆ®°¡ ÁØºñ µÉ ¶§¸¶´Ù ½ÇÇàÇÏ´Â°É·Î
+	public void game_start() { //
 
 		int i = 0;
 		for(Client client : userlist) {
@@ -136,20 +137,19 @@ public class InitialGameRoom {
 	}
 
 	public void ans_check(char[] ans, ArrayList<String> textlist, Client c) {
-
+		int tmp;
 		StringBuilder cho = new StringBuilder("");
 		for(int i = 0; i < ans.length; i++) {
-			int tmp = ((ans[i] - '°¡')/(28*21));
+			tmp = ((ans[i] - 'ê°€')/(28*21));
 			if(tmp >= 0) {
 				cho.append(Chosung[tmp]);
-				System.out.println(tmp);
-				System.out.println(quiz);
-				System.out.println(cho);
 			}
 		}
 		if(cho.toString().equals(quiz)) {
-			if(XmlParser.xmlParsing(textlist.get(2))) {	// Á¤´äÀÏ °æ¿ì
+			if(XmlParser.xmlParsing(textlist.get(2))) {	//
 				answer.add(textlist.get(2));
+				chosung.add(cho.toString().substring(0, 1));
+				chosung2.add(cho.toString());
 				for(Client client : userlist) {
 					if(client.getComboCount() != 0) {
 						if(client == c) {
@@ -164,10 +164,8 @@ public class InitialGameRoom {
 					c.setScore(c.getComboCount()*10);
 				else
 					c.setScore(50);
-
-				System.out.println(c.getUserid() + " : " + c.getScore());
 				textlist.set(0, "quiz");
-				textlist.add(" - Á¤´ä " + c.getComboCount() + "ÄÞº¸!");
+				textlist.add(" - ì •ë‹µ" + c.getComboCount() + "ì½¤ë³´!");
 				textlist.add(c.getUserid());
 				textlist.add(String.valueOf(c.getScore()));
 				broadcast(textlist);				
@@ -180,6 +178,12 @@ public class InitialGameRoom {
 	}
 	public ArrayList<String> getWordList(){
 		return answer;
+	}
+	public ArrayList<String> getChosung(){
+		return chosung;
+	}
+	public ArrayList<String> getChosung2(){
+		return chosung2;
 	}
 
 }

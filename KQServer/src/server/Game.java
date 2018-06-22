@@ -11,7 +11,7 @@ public class Game {
 		StringBuffer buffer = new StringBuffer();
 		Random random = new Random();
 
-		String chars[] = "¤¡,¤¤,¤§,¤©,¤±,¤²,¤µ,¤·,¤¸,¤º,¤»,¤¼,¤½,¤¾,¤¢,¤¨,¤³,¤¶,¤¹".split(",");
+		String chars[] = "ã„±,ã„´,ã„·,ã„¹,ã…,ã…‚,ã……,ã…‡,ã…ˆ,ã…Š,ã…‹,ã…Œ,ã…,ã…,ã„²,ã„¸,ã…ƒ,ã…†,ã…‰".split(",");
 		int lev[] = 	{7,13,10,12,9,10,8,5,2,15,24,24,28,16,36,36,36,36,36};
 
 		if(length == 2) {

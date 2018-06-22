@@ -19,7 +19,7 @@ public class XmlParser {
 	}
 
 	public static boolean xmlParsing(String text) {
-		try{// parsing할 url 지정(API 키 포함해서)
+		try{
 			String url = "https://opendict.korean.go.kr/api/search?certkey_no=258&key=EEBCB032558B51D1EF57A360DD33D85D&"
 					+ "target_type=search&q="+ text +"&start=1&advanced=n";//&type1=word&pos=1";
 

@@ -34,8 +34,8 @@ public class MainProcess{
 	MainProcess() {
 		try {
 			//222.238.181.109
-			//192.168.35.121
-			socket = new Socket("192.168.35.121", 6060);
+			//192.168.35.43
+			socket = new Socket("192.168.35.43", 6060);
 			System.out.println("서버 연결");
 
 			oos = new ObjectOutputStream(socket.getOutputStream());
@@ -135,8 +135,6 @@ public class MainProcess{
 
 	public void AchieveBack() {
 		JFrame frame = new JFrame();
-
-		ArrayList<String> wordlist = new ArrayList<String>();
 		text = new ArrayList<String>();
 
 		try {
@@ -145,18 +143,13 @@ public class MainProcess{
 			oos.flush();
 
 			System.out.println("업적 전송 완료");
-
-			try {
-				wordlist = (ArrayList<String>)ois.readObject();
-
-			} catch (ClassNotFoundException e) {e.printStackTrace();}
 		} catch (IOException e1) {e1.printStackTrace();}
+		new AchieveView(this);
 		text.clear();
-		if(wordlist.get(0).equals("null")) {
-			JOptionPane.showMessageDialog(frame, "등록된 단어가 없습니다.");
-		}else {
-			AchieveView achi = new AchieveView(this, wordlist);
-		}
+	}
+	
+	public void AchieveWord() {
+		
 	}
 
 	@SuppressWarnings("unchecked")
