@@ -4,14 +4,17 @@ import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import InitialGame.IGameView;
 import InitialGame.IMenuView;
 import SentenceGame.SGameView;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -19,10 +22,18 @@ public class MainMenu extends JFrame {
 
 	private JPanel contentPane;
 	private MainProcess main;
+	ImageIcon icon;
 
 	public MainMenu(MainProcess main) {
 		
 		this.main = main;
+		
+		icon = new ImageIcon("drawable/background3.jpg");
+		Image image = icon.getImage();
+		Image cimage = image.getScaledInstance(500, 400, image.SCALE_SMOOTH);
+		icon = new ImageIcon(cimage);
+		JLabel jl = new JLabel(icon);
+		jl.setBounds(0, 0, 500, 400);
 
 		setTitle("game menu");
 
@@ -82,6 +93,7 @@ public class MainMenu extends JFrame {
 		contentPane.add(button_start);
 		contentPane.add(button_logout);
 		contentPane.add(button_join);
+		contentPane.add(jl);
 
 		setVisible(true);
 	}
