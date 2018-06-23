@@ -65,6 +65,7 @@ class Server_thread extends Thread{
 
 	private ArrayList<String> userdata = null;
 	private ArrayList<String> wordlist = null;
+	private ArrayList<String> defilist = null;
 	private UserDTO dto = null;
 	private Client c = null;
 
@@ -97,9 +98,11 @@ class Server_thread extends Thread{
 		try	{
 			while(true) {
 				System.out.println("선택 대기");
-
+				
 				userdata = (ArrayList<String>)ois.readObject();
 				System.out.println(userdata);
+				
+				System.out.println("선택 완료" + userdata);
 
 				if (userdata.size() > 0){
 					if (userdata.get(0).equals("userjoin")) {
@@ -164,7 +167,7 @@ class Server_thread extends Thread{
 					else if(userdata.get(0).equals("sentence")) {
 						userdata.clear();
 						coSentences = new ArrayList<String>(); //Correct
-						wrWords = new ArrayList<String>(); //Wrong 
+						wrWords = new ArrayList<String>(); //Wro 	ng 
 
 						db.SelectSen(coSentences, wrWords);
 
@@ -179,21 +182,27 @@ class Server_thread extends Thread{
 
 					}else if(userdata.get(0).equals("achieve")) {
 						userdata.clear();
+						ArrayList<String> text;
 						wordlist = new ArrayList<String>();
-						while(true) {
+						boolean check = true;
+						while(check == true) {
 							try {
-								ArrayList<String> text = null;
 								text = (ArrayList<String>)ois.readObject();
 								System.out.println(text + "업적 테스트");
-
-								if(text.get(0) == "close") {
-									break;
-								}
-								System.out.println("업적 테스트");
-								wordlist = db.getWord(dto.getUserId(), text.get(0));
-								oos.writeObject(wordlist);
-								oos.flush();
-
+								
+								if(text.get(0).equals("close")) {
+									check = false;
+									oos.flush();
+								}else {
+									wordlist = db.getWord(dto.getUserId(), text.get(0));
+									defilist = db.getdefi();
+									System.out.println(wordlist);
+									System.out.println(defilist);
+									oos.writeObject(wordlist);
+									oos.flush();
+									oos.writeObject(defilist);
+									oos.flush();
+								}							
 							}catch(IOException|NullPointerException e) {
 								break;
 							}
@@ -306,9 +315,7 @@ class Server_thread extends Thread{
 								}
 							}
 							if(i == ko.length) {
-								synchronized(this) {
-									c.getRoom().ans_check(ko, textlist, c);
-								}
+								c.getRoom().ans_check(ko, textlist, c);
 							}
 						}else
 							c.getRoom().broadcast(textlist);
@@ -372,10 +379,12 @@ class Server_thread extends Thread{
 	public void save_answer(String userid) {
 		ArrayList<String> cholist = null;
 		ArrayList<String> cho = null;
+		ArrayList<String> de = null;
 
 		wordlist = c.getRoom().getWordList();
 		cho = c.getRoom().getChosung();
 		cholist = c.getRoom().getChosung2();
-		db.InsertWord(userid, wordlist,cho,cholist);
+		de = XmlParser.getdefinition();
+		db.InsertWord(userid, wordlist,cho,cholist,de);
 	}
 }

@@ -185,5 +185,4 @@ public class InitialGameRoom {
 	public ArrayList<String> getChosung2(){
 		return chosung2;
 	}
-
 }

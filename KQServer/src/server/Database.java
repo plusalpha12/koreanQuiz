@@ -8,6 +8,7 @@ public class Database {
 	private java.sql.PreparedStatement ps = null;
 	private java.sql.ResultSet rs = null;
 	private UserDTO dto = null;
+	ArrayList<String> definitionlist = new ArrayList<String>();
 
 	public Database(UserDTO dto) {
 		this.dto = dto;
@@ -111,15 +112,16 @@ public class Database {
 		return logincheck;
 	}
 
-	public void InsertWord(String id, ArrayList<String> wordlist, ArrayList<String> cho, ArrayList<String> cholist) {
+	public void InsertWord(String id, ArrayList<String> wordlist, ArrayList<String> cho, ArrayList<String> cholist, ArrayList<String> definition) {
 		ps = null;
 		try {
-			ps = conn.prepareStatement("insert into id_" + id + " value(?, ?, ?)");
+			ps = conn.prepareStatement("insert into id_" + id + " value(?, ?, ?, ?)");
 			
 			for(int i = 0; i<wordlist.size() ;i++) {
 				ps.setString(1, wordlist.get(i));
 				ps.setString(2, cho.get(i));
 				ps.setString(3, cholist.get(i));
+				ps.setString(4, definition.get(i));
 				ps.executeUpdate();
 			}
 		}catch(SQLException e) {
@@ -130,23 +132,27 @@ public class Database {
 	public ArrayList<String> getWord(String id, String cho) {
 		rs = null;
 		ps = null;
+		definitionlist = new ArrayList<String>();
 		ArrayList<String> wordlist = new ArrayList<String>();
 		try
 		{
-			ps = conn.prepareStatement("select word from id_" + id + " where cho=?");
+			ps = conn.prepareStatement("select word,defi from id_" + id + " where cho=? order by word asc");
 			ps.setString(1, cho);
 			rs = ps.executeQuery();
 			
 			while(rs.next()) {
 				wordlist.add(rs.getString("word"));
+				definitionlist.add(rs.getString("defi"));
 			}
 			if(wordlist.size()<1)
 				wordlist.add("null");
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return wordlist;
+	}
+	public ArrayList<String> getdefi(){
+		return definitionlist;
 	}
 
 	public void SelectSen(ArrayList<String> co, ArrayList<String> wr) {
