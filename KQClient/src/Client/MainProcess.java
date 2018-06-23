@@ -6,9 +6,6 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-
 import InitialGame.AchieveView;
 import InitialGame.IGameView;
 import SentenceGame.SGameView;
@@ -19,14 +16,18 @@ public class MainProcess{
 	private Socket socket = null;
 	private ArrayList<String> userData = null;
 	private ArrayList<sendclient> ClientList = null;
-	private static ObjectOutputStream oos = null;
-	private static ObjectInputStream ois = null;
+	private ObjectOutputStream oos = null;
+	private ObjectInputStream ois = null;
 	private String logincheck = null;
+	
 	private IGameView igame = null;
 	private SGameView sgame = null;
+	private AchieveView aview = null;
 	private UserDTO dto = null;
-	private ArrayList<String> textlist = new ArrayList<String>();
-	ArrayList<String> text = new ArrayList<String>();
+	
+	ArrayList<String> wordlist = new ArrayList<String>();
+	ArrayList<String> defilist = new ArrayList<String>();
+	ArrayList<String> textlist = new ArrayList<String>();
 	ArrayList<String> coSentences = null; //Correct
 	ArrayList<String> wrWords = null; //Wrong 
 
@@ -94,26 +95,26 @@ public class MainProcess{
 	}
 
 	//이니셜 게임 백그라운드
+	@SuppressWarnings("unchecked")
 	public void InitialGameBack(boolean single) {
 		int i = 0;
 		igame = new IGameView(this);
 		ClientList = new ArrayList<sendclient>();
 		Receive_msg_thread rmt = new Receive_msg_thread(igame, socket);
-		text = new ArrayList<String>();
+		textlist = new ArrayList<String>();
 
 		try {
 			if(single)
-				text.add(0, "initial_single");
+				textlist.add(0, "initial_single");
 			else
-				text.add(0, "initial");
-			oos.writeObject(text);
+				textlist.add(0, "initial");
+			oos.writeObject(textlist);
 			oos.flush();
 
 			System.out.println("게임 전송 완료");
 
+			ois = new ObjectInputStream(socket.getInputStream());
 			try {
-				ois = new ObjectInputStream(socket.getInputStream());
-
 				ClientList = (ArrayList<sendclient>)ois.readObject();
 
 				for(sendclient user : ClientList) {
@@ -130,38 +131,72 @@ public class MainProcess{
 
 			} catch (ClassNotFoundException e) {e.printStackTrace();}
 		} catch (IOException e1) {e1.printStackTrace();}
-		text.clear();
+		textlist.clear();
 	}
 
 	public void AchieveBack() {
-		JFrame frame = new JFrame();
-		text = new ArrayList<String>();
+		textlist = new ArrayList<String>();
 
 		try {
-			text.add("achieve");
-			oos.writeObject(text);
+			textlist.add("achieve");
+			oos.writeObject(textlist);
 			oos.flush();
-
-			System.out.println("업적 전송 완료");
-		} catch (IOException e1) {e1.printStackTrace();}
-		new AchieveView(this);
-		text.clear();
+			
+		} catch (IOException e) {e.printStackTrace();}
+		aview = new AchieveView(this);
+		textlist.clear();
 	}
 	
-	public void AchieveWord() {
-		
+	@SuppressWarnings("unchecked")
+	public void AchieveWord(int i) {
+		textlist = new ArrayList<String>();
+		wordlist = new ArrayList<String>();
+		switch(i) {
+		case 0:			textlist.add("ㄱ");			break;
+		case 1:			textlist.add("ㄴ");			break;
+		case 2:			textlist.add("ㄷ");			break;
+		case 3:			textlist.add("ㄹ");			break;
+		case 4:			textlist.add("ㅁ");			break;
+		case 5:			textlist.add("ㅂ");			break;
+		case 6:			textlist.add("ㅅ");			break;
+		case 7:			textlist.add("ㅇ");			break;
+		case 8:			textlist.add("ㅈ");			break;
+		case 9:			textlist.add("ㅊ");			break;
+		case 10:		textlist.add("ㅋ");			break;
+		case 11:		textlist.add("ㅌ");			break;
+		case 12:		textlist.add("ㅍ");			break;
+		case 13:		textlist.add("ㅎ");			break;
+		case 14:		textlist.add("ㄲ");			break;
+		case 15:		textlist.add("ㄸ");			break;
+		case 16:		textlist.add("ㅃ");			break;
+		case 17:		textlist.add("ㅆ");			break;
+		case 18:		textlist.add("ㅉ");			break;
+		}
+		try {
+			oos.writeObject(textlist);
+			oos.flush();
+			System.out.println("초성 전송");
+			try {
+				wordlist = (ArrayList<String>)ois.readObject();
+				System.out.println(wordlist);
+				defilist = (ArrayList<String>)ois.readObject();
+				System.out.println(defilist);
+				
+				aview.setWord(wordlist, defilist);
+			} catch (ClassNotFoundException e) {e.printStackTrace();}	
+		} catch (IOException e1) {e1.printStackTrace();}
+		textlist.clear();
 	}
 
 	@SuppressWarnings("unchecked")
 	public void SentenceGameBack() {
-
 		coSentences = new ArrayList<String>(); //Correct
 		wrWords = new ArrayList<String>(); //Wrong 
-		text = new ArrayList<String>();
+		textlist = new ArrayList<String>();
 
 		try {
-			text.add(0, "sentence");
-			oos.writeObject(text);
+			textlist.add(0, "sentence");
+			oos.writeObject(textlist);
 			oos.flush();
 
 			System.out.println("게임 전송 완료");
@@ -175,7 +210,7 @@ public class MainProcess{
 		} catch (IOException e1) {e1.printStackTrace();}
 
 		sgame = new SGameView(coSentences, wrWords);
-		text.clear();
+		textlist.clear();
 	}
 
 	public void send_chat(String text) {
@@ -245,9 +280,9 @@ class Receive_msg_thread extends Thread{
 		this.igame = igame;
 		this.soc = soc;
 	}
+	@SuppressWarnings("unchecked")
 	public void run() {
 		ArrayList<String> textlist = new ArrayList<String>();
-		int score = 0;
 		while(true){
 			try {
 				ois = new ObjectInputStream(soc.getInputStream());
@@ -277,17 +312,13 @@ class Receive_msg_thread extends Thread{
 
 				}else if(textlist.get(0).equals("close")){
 					System.out.println("게임 종료");
-					for(String text : textlist) {
-						igame.set_msg(text);
-					}
-					Thread.interrupted();
 					break;
 				}
 			}
-
-			catch (ClassNotFoundException e){e.printStackTrace();}
+			catch (ClassNotFoundException e){e.printStackTrace(); break;}
 			catch (IOException|NullPointerException e) {e.printStackTrace(); break;}
 		}
+		System.out.println("초성 놀이 종료");
 	}
 }
 

@@ -99,8 +99,6 @@ public class IGameView extends JFrame {
 			public void keyTyped(KeyEvent arg0) {}
 
 		});
-		//JLabel quizlabel = new JLabel(Game.getRandomString(2));
-		//quizlabel.setFont(new Font("»ﬁ∏’∆Ì¡ˆ√º", Font.BOLD, 50));
 		quizlabel.setHorizontalAlignment(JLabel.CENTER);
 
 		upperPanel.setBackground(Color.gray);
@@ -147,9 +145,9 @@ public class IGameView extends JFrame {
 		button_exit.setFont(new Font("»ﬁ∏’∆Ì¡ˆ√º", Font.PLAIN, 18));
 		button_exit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new IMenuView(main);
 				main.send_chat("close");
 				dthread.interrupt();
+				new IMenuView(main);
 				dispose();
 			}
 		});
@@ -195,7 +193,6 @@ public class IGameView extends JFrame {
 		lowerPanel.add(ans_input);
 		lowerPanel.add(ready, BorderLayout.WEST);
 		
-
 		middlePanel.add(UserPanel1, BorderLayout.WEST);
 		middlePanel.add(sp, BorderLayout.CENTER);
 		middlePanel.add(UserPanel2, BorderLayout.EAST);
@@ -232,7 +229,6 @@ public class IGameView extends JFrame {
 		textField.setVisible(true);
 		ans_input.setVisible(true);
 		set_quiz(text);
-		
 		dthread.setDaemon(true);
 		dthread.start();
 	}

@@ -91,7 +91,7 @@ public class LoginView extends JFrame{
 		panel.add(passText);
 
 		btnInit = new JButton("\uCD08\uAE30\uD654");
-		btnInit.setBounds(40, 100, 75, 25);
+		btnInit.setBounds(40, 110, 75, 25);
 		panel.add(btnInit);
 		btnInit.addActionListener(new ActionListener() {
 			@Override
@@ -102,7 +102,7 @@ public class LoginView extends JFrame{
 		});
 		
 		JButton button_join = new JButton("회원가입");
-		button_join.setBounds(130, 100, 90, 25);
+		button_join.setBounds(130, 110, 90, 25);
 		panel.add(button_join);
 		button_join.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -111,7 +111,7 @@ public class LoginView extends JFrame{
 		});
 
 		btnLogin = new JButton("로그인");
-		btnLogin.setBounds(235, 100, 75, 25);
+		btnLogin.setBounds(235, 110, 75, 25);
 		panel.add(btnLogin);
 		btnLogin.addActionListener(new ActionListener() {
 			@Override

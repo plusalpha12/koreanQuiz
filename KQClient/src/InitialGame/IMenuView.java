@@ -28,6 +28,8 @@ public class IMenuView extends JFrame {
 	public IMenuView(MainProcess main) {
 		this.main = main;
 		
+		System.out.println("초성 놀이 선택");
+		
 		icon = new ImageIcon("drawable/background3.jpg");
 		Image image = icon.getImage();
 		Image cimage = image.getScaledInstance(500, 400, image.SCALE_SMOOTH);
