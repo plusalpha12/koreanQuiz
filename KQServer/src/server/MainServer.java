@@ -59,6 +59,7 @@ class Server_thread extends Thread{
 	private HashMap<String, Client> userlist = null;
 	private static ArrayList<Client> wuser = null;
 	private Database db = null;
+	private boolean isLogin = false;
 
 	private ObjectInputStream ois = null;
 	private ObjectOutputStream oos = null;
@@ -70,7 +71,11 @@ class Server_thread extends Thread{
 	private Client c = null;
 
 	private ArrayList<String> coSentences = null; //Correct
-	private ArrayList<String> wrWords = null; //Wrong 
+	private ArrayList<String> coSentences1 = null; //Correct
+	private ArrayList<String> coSentences2 = null; //Correct
+	private ArrayList<String> wrWords = null; //Wrong
+	
+	int[] num = new int[3];
 
 	Server_thread(Socket soc, InitialGameManager igm, HashMap<String, Client> map, ArrayList<Client> w) {
 		this.soc = soc;
@@ -81,10 +86,9 @@ class Server_thread extends Thread{
 		db = new Database(dto);
 		try {
 			System.out.println("클라이언트 연결");
-
+			
 			oos = new ObjectOutputStream(soc.getOutputStream());
 			ois = new ObjectInputStream(soc.getInputStream());
-			System.out.println("클라이언트 연결 성공");
 		}
 		catch (SocketException|NullPointerException se) {
 			System.out.println("클라이언트 종료 ");
@@ -118,12 +122,9 @@ class Server_thread extends Thread{
 					else if (userdata.get(0).equals("initial")) {
 						userdata.clear();
 						InitialGameRoom room = null;
-						synchronized(wuser) {
-							if(wuser.size() < 4) wuser.add(c);	// 이니셜게임 대기열에 입장
-						}
+						wuser.add(c);	// 이니셜게임 대기열에 입장
 
 						if((wuser.size() >= 3 && wuser.size() <= 4) || Timeout()) {
-
 							synchronized(this) {
 								if(igm.getRoomlist().size() < 1) {
 									System.out.println("유저 접속");
@@ -160,21 +161,25 @@ class Server_thread extends Thread{
 						}else {
 							System.out.println("이미 방에 있습니다.");
 						}
-
 						InitialGame(room);
 					}
 
 					else if(userdata.get(0).equals("sentence")) {
 						userdata.clear();
 						coSentences = new ArrayList<String>(); //Correct
-						wrWords = new ArrayList<String>(); //Wro 	ng 
+						wrWords = new ArrayList<String>(); //Wrong 
+						coSentences1 = new ArrayList<String>(); //Correct
+						coSentences2 = new ArrayList<String>(); //Correct
 
-						db.SelectSen(coSentences, wrWords);
+						db.SelectSen(coSentences, wrWords, coSentences1, coSentences2);
 
 						oos.writeObject(coSentences);
 						oos.flush();
-
 						oos.writeObject(wrWords);
+						oos.flush();
+						oos.writeObject(coSentences1);
+						oos.flush();
+						oos.writeObject(coSentences2);
 						oos.flush();
 
 						coSentences.clear();
@@ -184,32 +189,43 @@ class Server_thread extends Thread{
 						userdata.clear();
 						ArrayList<String> text;
 						wordlist = new ArrayList<String>();
-						boolean check = true;
-						while(check == true) {
+						while(true) {
 							try {
 								text = (ArrayList<String>)ois.readObject();
 								System.out.println(text + "업적 테스트");
 								
 								if(text.get(0).equals("close")) {
-									check = false;
 									oos.flush();
+									break;
 								}else {
 									wordlist = db.getWord(dto.getUserId(), text.get(0));
 									defilist = db.getdefi();
-									System.out.println(wordlist);
-									System.out.println(defilist);
+									
 									oos.writeObject(wordlist);
 									oos.flush();
+									System.out.println("단어 전달");
+									
 									oos.writeObject(defilist);
 									oos.flush();
+									System.out.println("의미 전달");
+									
 								}							
 							}catch(IOException|NullPointerException e) {
 								break;
 							}
 						}
+					}else if(userdata.get(0).equals("data")) {
+						System.out.println("요청 수신");
+						num[0] = igm.getRoomlist().size();
+						num[1] = userlist.size();
+						num[2] = wuser.size();
+						oos.writeObject(num);
+						oos.flush();
+						System.out.println("게임중인방 수 "+ num[0] +", 접속중인 유저 수 "+ num[1] +", 대기중인 유저 수 전송 "+ num[2]);
+					}else {
+						System.out.println("오류");
 					}
 				}
-				else{}
 			}
 		}
 		catch (ClassNotFoundException e){
@@ -220,6 +236,7 @@ class Server_thread extends Thread{
 		}
 		catch (IOException|NullPointerException e) {
 			System.out.println("클라이언트 종료 2");
+			userlist.remove(dto.getUserId());
 			try {soc.close();}
 			catch (IOException e1) { e1.printStackTrace();}
 		}
@@ -270,6 +287,7 @@ class Server_thread extends Thread{
 					oos.flush();
 					c = new Client(dto.getUserId(), dto.getUserName(), soc);
 					userlist.put(dto.getUserId(), c);
+					isLogin = true;
 				} else {
 					System.out.println("비밀번호");
 					oos.writeObject("password");
@@ -297,13 +315,9 @@ class Server_thread extends Thread{
 				System.out.println("명령 대기");
 				try {
 					textlist = (ArrayList<String>)ois.readObject();
-
-					System.out.println(textlist);
-
 					if(textlist.get(0).equals("chat")) { // 채팅일 경우
 						int i;
 						String text = "";
-
 						text = textlist.get(2);
 						char[] ko = text.toCharArray();
 
@@ -314,11 +328,8 @@ class Server_thread extends Thread{
 									break;
 								}
 							}
-							if(i == ko.length) {
-								c.getRoom().ans_check(ko, textlist, c);
-							}
-						}else
-							c.getRoom().broadcast(textlist);
+							if(i == ko.length) {c.getRoom().ans_check(ko, textlist, c);	}
+						}else	c.getRoom().broadcast(textlist);
 
 					}else if(textlist.get(0).equals("ready")) { // 준비를 누른 경우
 						c.ready_stat(true);
@@ -330,17 +341,16 @@ class Server_thread extends Thread{
 						System.out.println(c.getUserid() + " 게임 준비 취소");
 
 					}else if(textlist.get(0).equals("close")) { // 종료를 누른 경우
+						c.getRoom().Send_msg(textlist, c);
+						
 						c.setScore(0);
 						c.setComboCount(true);
 						save_answer(dto.getUserId());
-						c.getRoom().Send_msg(textlist, c);
+						
 						c.getRoom().exitUser(c);
 						System.out.println(c.getUserid() + " 게임 종료");
 						textlist.clear();
 						break;
-
-					}else {
-
 					}
 					textlist.clear();
 				} catch (ClassNotFoundException|NullPointerException e) {
@@ -351,6 +361,7 @@ class Server_thread extends Thread{
 				e.printStackTrace();
 				break;}
 		}
+		System.out.println(c.getUserid() + " 게임 종료3");
 	}
 
 	private boolean Timeout() {

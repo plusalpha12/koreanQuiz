@@ -155,7 +155,7 @@ public class Database {
 		return definitionlist;
 	}
 
-	public void SelectSen(ArrayList<String> co, ArrayList<String> wr) {
+	public void SelectSen(ArrayList<String> co, ArrayList<String> wr,ArrayList<String> co1, ArrayList<String> co2) {
 		rs = null;
 		ps = null;
 		try {
@@ -164,7 +164,13 @@ public class Database {
 
 			while(rs.next()){
 				co.add(rs.getString(1));
+				System.out.println(rs.getString(1));
 				wr.add(rs.getString(2));
+				System.out.println(rs.getString(2));
+				co1.add(rs.getString(3));
+				System.out.println(rs.getString(3));
+				co2.add(rs.getString(4));
+				System.out.println(rs.getString(4));
 			}
 
 		} catch (SQLException e) {

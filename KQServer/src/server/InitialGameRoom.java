@@ -45,21 +45,22 @@ public class InitialGameRoom {
 		for(Client client : c) {
 			Send_userdata(userlist2, client.getSocket());			
 		}
-
 		textlist.add("join");
 		broadcast(textlist);
 		textlist.clear();
 	}
 
 	public void exitUser(Client client) {
-		ArrayList<String> textlist = new ArrayList<String>();
+		textlist = new ArrayList<String>();
 		client.exitRoom();
 		userlist.remove(client);
+		System.out.println("유저리스트 : " + userlist);
 		textlist.add("exit");
 		broadcast(textlist);
 		if(userlist.size() < 1) {
 			InitialGameManager.removeRoom(this);
 		}
+		textlist.clear();
 	}
 
 	public void room_close() {
@@ -72,21 +73,24 @@ public class InitialGameRoom {
 
 	public void broadcast(ArrayList<String> text) {	
 
-		if(text.get(0).equals("join")) { //
+		if(text.get(0).equals("join")) {
+			System.out.println("브로드 캐스트" + text);
 			for (Client client : userlist) {
 				text.add(client.getUsername() + "님께서 입장하셨습니다.");
 			}
 			for(Client client : userlist) { //
 				Send_msg(text, client);
 			}
-		}else if(text.get(0).equals("chat")){ //
+		}else if(text.get(0).equals("chat")){
+			System.out.println("브로드 캐스트" + text);
 			int i = 0;
 			for(Client client : userlist) {
 				System.out.println(i + " " + client.getSocket());
 				Send_msg(text, client);
 				i++;
 			}
-		}else if (text.get(0).equals("start") || text.get(0).equals("quiz")){ // ������ ���۵Ǵ� ���
+		}else if (text.get(0).equals("start") || text.get(0).equals("quiz")){
+			System.out.println("브로드 캐스트" + text);
 			quiz = Game.getRandomString(2);
 			text.add(quiz);
 			for (Client client : userlist) {
@@ -94,11 +98,12 @@ public class InitialGameRoom {
 			}
 		}
 		else if (text.get(0).equals("exit")){ //
+			System.out.println("브로드 캐스트" + text);
 			for (Client client : userlist) {
+				System.out.println(client + "에게 " + text);
 				Send_msg(text, client);
 			}
 		}
-
 	}
 
 	public void Send_userdata(ArrayList<sendclient> c, Socket soc2) {

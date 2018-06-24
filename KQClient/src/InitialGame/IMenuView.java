@@ -24,11 +24,12 @@ public class IMenuView extends JFrame {
 	private JPanel contentPane;
 	private MainProcess main;
 	ImageIcon icon;
+	int[] num = {0,1,0};
 	
 	public IMenuView(MainProcess main) {
 		this.main = main;
 		
-		System.out.println("초성 놀이 선택");
+		main.setIview(this);
 		
 		icon = new ImageIcon("drawable/background3.jpg");
 		Image image = icon.getImage();
@@ -39,7 +40,8 @@ public class IMenuView extends JFrame {
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
-		
+
+		setTitle("접속중인 유저 : " + num[1] + " / 대기중인 유저 : " + num[2]);
 		setSize(500, 400);
 		setLocationRelativeTo(null);
 		setResizable(false);
@@ -105,6 +107,13 @@ public class IMenuView extends JFrame {
 		panel.add(jl);
 		contentPane.add(panel);
 		
+		main.connstart();
+		
 		setVisible(true);
+	}
+	
+	public void settitle(int[] num) {
+		this.num = num;
+		setTitle("접속중인 유저 : " + num[1] + " / 대기중인 유저 : " + num[2]);
 	}
 }

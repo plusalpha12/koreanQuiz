@@ -12,7 +12,7 @@ public class Game {
 		Random random = new Random();
 
 		String chars[] = "ㄱ,ㄴ,ㄷ,ㄹ,ㅁ,ㅂ,ㅅ,ㅇ,ㅈ,ㅊ,ㅋ,ㅌ,ㅍ,ㅎ,ㄲ,ㄸ,ㅃ,ㅆ,ㅉ".split(",");
-		int lev[] = 	{7,13,10,12,9,10,8,5,5,15,25,25,28,20,36,36,36,36,36};
+		int lev[] = 	{7,13,10,12,9,10,8,5,5,15,36,36,28,20,36,36,36,36,36};
 
 		if(length == 2) {
 			level = 35;
@@ -21,7 +21,8 @@ public class Game {
 				min = lev[rand];
 				level -= min;
 				if(level < 0) {
-					level += min;
+					level =  35;
+					buffer.delete(0, 1);
 					continue;
 				}else
 					buffer.append(chars[rand]);

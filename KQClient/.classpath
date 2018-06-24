@@ -4,5 +4,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="drawable"/>
 	<classpathentry kind="src" path="achieve"/>
+	<classpathentry kind="src" path="sound"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -2,9 +2,17 @@ package SentenceGame;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -15,32 +23,32 @@ import javax.swing.JTextField;
 import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 
+import Client.MainMenu;
+import Client.MainProcess;
+import InitialGame.IMenuView;
+
 public class SGameView {
 
-	public static JFrame jf = new JFrame();
-	private static JPanel contentPane;
+	JFrame jf = new JFrame();
+	private JPanel contentPane;
 	//단어 버튼들
-	static JButton[] buttons;
+	JButton[] buttons;
 	//어떤 문장을 내보낼지 index 역할
-	static int chooseSentence;
+	int chooseSentence;
 	//현재 맞는 문장
-	static String separtateWord;
+	String separtateWord;
 	//틀린 단어
-	static String wrongWord;
+	String wrongWord;
 	//단어버튼 시작 좌표
-	static int buttonX = 170;
-	static int buttonY = 194;
-	static JTextField textField;
-	static Timer timer;
-	static JProgressBar progressBar;
-	static int counter = 100;
-	//맞는 문장 리스트
-	static ArrayList<String> coSentences;
-	//틀린 단어 리스트
-	static ArrayList<String> wrWords;
+	int buttonX = 170;
+	int buttonY = 194;
+	JTextField textField;
+	Timer timer;
+	JProgressBar progressBar;
+	int counter = 100;
+	JButton exitButton;
 
-	public SGameView(ArrayList<String> coSentences,  ArrayList<String> wrWords) {
-		this.coSentences = coSentences; this.wrWords = wrWords;
+	public SGameView(ArrayList<String> coSentences,  ArrayList<String> wrWords, MainProcess main, ArrayList<String> coSentences1, ArrayList<String> coSentences2) {
 		jf.setDefaultCloseOperation(jf.EXIT_ON_CLOSE);
 		jf.setBounds(100, 100, 856, 586);
 		contentPane = new JPanel();
@@ -59,16 +67,16 @@ public class SGameView {
 		textField.setColumns(10);
 
 		//exitButton
-		JButton exitButton = new JButton("종료");
+		exitButton = new JButton("종료");
 		exitButton.setBounds(741, 0, 100, 50);
 		contentPane.add(exitButton);
 		exitButton.addActionListener(new ActionListener(){
-			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.exit(0);
+				new MainMenu(main);
+				jf.dispose();
 			}
 		});
-		
+
 		//checkButton
 		JButton checkButton = new JButton("확인");
 		checkButton.setBounds(770, 61, 70, 41);
@@ -77,7 +85,24 @@ public class SGameView {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				//정답 체크
-				if(textField.getText().trim().equals(separtateWord)){
+				if(	textField.getText().trim().equals(separtateWord)
+					|| textField.getText().trim().equals(coSentences1.get(chooseSentence))
+					|| textField.getText().trim().equals(coSentences2.get(chooseSentence)))
+				{
+					AudioInputStream ais;
+					try {
+						ais = AudioSystem.getAudioInputStream(new File("sound/correct.wav"));
+						Clip clip = AudioSystem.getClip();
+						clip.stop();
+						clip.open(ais);
+						FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+						gainControl.setValue(-50.0f);
+						clip.start();
+					} catch (UnsupportedAudioFileException | IOException e1) {
+						e1.printStackTrace();
+					} catch (LineUnavailableException e1) {
+						e1.printStackTrace();
+					}
 					JOptionPane.showMessageDialog(null, "정답입니다","정답입니다.",JOptionPane.INFORMATION_MESSAGE);
 					for(int j = 0; j<buttons.length; j++)
 						contentPane.remove(buttons[j]);
@@ -96,6 +121,18 @@ public class SGameView {
 				}
 				//오답 체크
 				else{
+					AudioInputStream ais;
+					try {
+						ais = AudioSystem.getAudioInputStream(new File("sound/incorrect.wav"));
+						Clip clip = AudioSystem.getClip();
+						clip.stop();
+						clip.open(ais);
+						clip.start();
+					} catch (UnsupportedAudioFileException | IOException e1) {
+						e1.printStackTrace();
+					} catch (LineUnavailableException e1) {
+						e1.printStackTrace();
+					}
 					JOptionPane.showMessageDialog(null, "오답입니다.","오답입니다.",JOptionPane.OK_OPTION);
 					textField.setText("");
 				}
@@ -116,16 +153,18 @@ public class SGameView {
 				} 
 			}
 		};
+
 		timer = new Timer(1000, listener);
 		timer.start();
 		progressBar.setBounds(0, 0, 164, 50);
 		contentPane.add(progressBar);
+
 		chooseSentence = (int)(coSentences.size()*Math.random());
 		setSentence(coSentences.get(chooseSentence), wrWords.get(chooseSentence));
 		jf.setVisible(true);
 	}
 
-	public static void setSentence(String sep, String wro){
+	public void setSentence(String sep, String wro){
 		separtateWord = sep; wrongWord = wro;
 		//wordButton
 		buttons = new JButton[separtateWord.split(" ").length+wrongWord.split(" ").length];
@@ -150,9 +189,7 @@ public class SGameView {
 			}
 		}
 		jf.setVisible(true);
-
 	}
-
 
 	private static Random random;
 	public static String[] shuffle(String [] array) {

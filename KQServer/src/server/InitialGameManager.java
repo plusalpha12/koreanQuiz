@@ -9,13 +9,14 @@ public class InitialGameManager {
 	private ArrayList<Client> userlist = null;
 	private Client client = null;
 	private AtomicInteger atomic = new AtomicInteger();
+	ArrayList<String> textlist;
 
 	public InitialGameManager() {
 		roomlist = new ArrayList<InitialGameRoom>();
 		userlist = new ArrayList<Client>();
 	}
 	public InitialGameRoom createRoom(Client client) {	// 혼자하기
-		ArrayList<String> textlist = new ArrayList<String>();
+		textlist = new ArrayList<String>();
 		int roomnum = atomic.incrementAndGet();
 		this.client = client;
 		
@@ -32,10 +33,9 @@ public class InitialGameManager {
 	}
 
 	public InitialGameRoom createRoom(ArrayList<Client> c) { // 멀티 매칭시
-		ArrayList<String> textlist = new ArrayList<String>();
+		textlist = new ArrayList<String>();
 		int roomnum = atomic.incrementAndGet();
 		this.userlist = c;
-		int i = 0;
 		
 		InitialGameRoom room = new InitialGameRoom(roomnum);
 		
