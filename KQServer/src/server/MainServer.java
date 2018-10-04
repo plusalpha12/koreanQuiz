@@ -19,6 +19,7 @@ public class MainServer{
 	private ArrayList<Client> wuser = null;
 	private ServerSocket server = null;
 	private Socket client = null;
+	ShareClass sc;
 
 
 	public static void main(String[] args) {
@@ -30,6 +31,7 @@ public class MainServer{
 		igm = new InitialGameManager();
 		map = new HashMap<String, Client>();
 		wuser = new ArrayList<Client>();
+		sc = new ShareClass();
 
 		try {
 
@@ -43,7 +45,7 @@ public class MainServer{
 				client = server.accept();
 				System.out.println(client.getInetAddress() + "에서 접속했습니다.");
 
-				Server_thread ST = new Server_thread(client, igm, map, wuser);
+				Server_thread ST = new Server_thread(client, igm, map, wuser, sc);
 				ST.start();
 			}
 		} catch (IOException e) {
@@ -57,7 +59,8 @@ class Server_thread extends Thread{
 	private Socket soc = null;
 	private InitialGameManager igm = null;
 	private HashMap<String, Client> userlist = null;
-	private static ArrayList<Client> wuser = null;
+	private ArrayList<Client> wuser = null;
+	private int loginUser;
 	private Database db = null;
 	private boolean isLogin = false;
 
@@ -69,6 +72,7 @@ class Server_thread extends Thread{
 	private ArrayList<String> defilist = null;
 	private UserDTO dto = null;
 	private Client c = null;
+	ShareClass sc;
 
 	private ArrayList<String> coSentences = null; //Correct
 	private ArrayList<String> coSentences1 = null; //Correct
@@ -77,23 +81,31 @@ class Server_thread extends Thread{
 	
 	int[] num = new int[3];
 
-	Server_thread(Socket soc, InitialGameManager igm, HashMap<String, Client> map, ArrayList<Client> w) {
+	Server_thread(Socket soc, InitialGameManager igm, HashMap<String, Client> map, ArrayList<Client> w, ShareClass sc) {
 		this.soc = soc;
 		this.igm = igm;
 		userlist = map;
+		this.sc = sc;
 		wuser = w;
 		dto = new UserDTO();
 		db = new Database(dto);
 		try {
+			sc.login_User();
+			this.loginUser = sc.getloginUser();
+			
 			System.out.println("클라이언트 연결");
 			
 			oos = new ObjectOutputStream(soc.getOutputStream());
 			ois = new ObjectInputStream(soc.getInputStream());
 		}
 		catch (SocketException|NullPointerException se) {
+			sc.logout_User();
+			
 			System.out.println("클라이언트 종료 ");
+			
 			try { soc.close();}
 			catch (IOException e) {e.printStackTrace();}
+			
 		} catch (IOException e) {e.printStackTrace();}
 	}
 
@@ -123,16 +135,19 @@ class Server_thread extends Thread{
 						userdata.clear();
 						InitialGameRoom room = null;
 						wuser.add(c);	// 이니셜게임 대기열에 입장
+						sc.waitingUser();
 
-						if((wuser.size() >= 3 && wuser.size() <= 4) || Timeout()) {
+						if((wuser.size() >= 2 && wuser.size() <= 4) || Timeout()) {
 							synchronized(this) {
 								if(igm.getRoomlist().size() < 1) {
 									System.out.println("유저 접속");
 									room = igm.createRoom(wuser);
+									sc.endUser();
 									wuser.clear();
 								}else if(igm.getRoomlist().size() >= 1 && c.getRoom() == null) {
 									System.out.println("유저 접속2");
 									room = igm.createRoom(wuser);
+									sc.endUser();
 									wuser.clear();
 								}else {
 									System.out.println("이미 방에 있습니다.");
@@ -151,11 +166,13 @@ class Server_thread extends Thread{
 						if(igm.getRoomlist().size() < 1) {
 							System.out.println("유저 접속");
 							room = igm.createRoom(wuser);
+							sc.endUser();
 							wuser.clear();
 
 						}else if(igm.getRoomlist().size() >= 1 && c.getRoom() == null) {
 							System.out.println("유저 접속2");
 							room = igm.createRoom(wuser);
+							sc.endUser();
 							wuser.clear();
 
 						}else {
@@ -215,13 +232,14 @@ class Server_thread extends Thread{
 							}
 						}
 					}else if(userdata.get(0).equals("data")) {
+						oos.reset();
 						System.out.println("요청 수신");
 						num[0] = igm.getRoomlist().size();
 						num[1] = userlist.size();
-						num[2] = wuser.size();
+						num[2] = sc.getwaitUser();
 						oos.writeObject(num);
 						oos.flush();
-						System.out.println("게임중인방 수 "+ num[0] +", 접속중인 유저 수 "+ num[1] +", 대기중인 유저 수 전송 "+ num[2]);
+						System.out.println("게임중인방 수 "+ num[0]	+", 접속중인 유저 수 "+ num[1] +", 대기중인 유저 수 전송 "+ num[2]);
 					}else {
 						System.out.println("오류");
 					}
@@ -329,7 +347,7 @@ class Server_thread extends Thread{
 								}
 							}
 							if(i == ko.length) {c.getRoom().ans_check(ko, textlist, c);	}
-						}else	c.getRoom().broadcast(textlist);
+						}else c.getRoom().broadcast(textlist);
 
 					}else if(textlist.get(0).equals("ready")) { // 준비를 누른 경우
 						c.ready_stat(true);
@@ -355,12 +373,20 @@ class Server_thread extends Thread{
 					textlist.clear();
 				} catch (ClassNotFoundException|NullPointerException e) {
 					e.printStackTrace(); 
+					textlist.clear();
 					break;
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
+				c.setScore(0);
+				c.setComboCount(true);
+				save_answer(dto.getUserId());
+				
+				c.getRoom().exitUser(c);
+				textlist.clear();
 				break;}
 		}
+		textlist.clear();
 		System.out.println(c.getUserid() + " 게임 종료3");
 	}
 

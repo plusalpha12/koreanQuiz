@@ -14,6 +14,8 @@ import javax.swing.JTextField;
 import javax.swing.JPasswordField;
 import javax.swing.JCheckBox;
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
+import java.awt.Font;
 
 public class JoinView extends JFrame {
 
@@ -59,18 +61,22 @@ public class JoinView extends JFrame {
 		panel.setLayout(null);
 		
 		JLabel label = new JLabel("아이디");
+		label.setFont(new Font("휴먼편지체", Font.PLAIN, 15));
 		label.setBounds(60, 50, 60, 20);
 		panel.add(label);
 		JLabel label_1 = new JLabel("비밀번호");
+		label_1.setFont(new Font("휴먼편지체", Font.PLAIN, 13));
 		label_1.setBounds(60, 80, 60, 20);
 		panel.add(label_1);
 		JLabel label_2 = new JLabel("비밀번호 확인");
+		label_2.setFont(new Font("휴먼편지체", Font.PLAIN, 13));
 		label_2.setBounds(60, 110, 90, 20);
 		panel.add(label_2);
 		JLabel label_name = new JLabel("닉네임");
 		label_name.setBounds(60, 140, 60, 20);
 		panel.add(label);
 		JLabel label_4 = new JLabel("성별");
+		label_4.setFont(new Font("휴먼편지체", Font.PLAIN, 13));
 		label_4.setBounds(60, 170, 60, 20);
 		panel.add(label_4);
 		
@@ -92,17 +98,20 @@ public class JoinView extends JFrame {
 		panel.add(passwordField_1);
 		
 		JCheckBox chckbxNewCheckBox = new JCheckBox("남자");
+		chckbxNewCheckBox.setFont(new Font("휴먼편지체", Font.PLAIN, 13));
 		buttonGroup.add(chckbxNewCheckBox);
 		chckbxNewCheckBox.setBounds(145, 165, 60, 25);
 		panel.add(chckbxNewCheckBox);
 		
 		JCheckBox chckbxNewCheckBox_1 = new JCheckBox("여자");
+		chckbxNewCheckBox_1.setFont(new Font("휴먼편지체", Font.PLAIN, 13));
 		buttonGroup.add(chckbxNewCheckBox_1);
-		chckbxNewCheckBox_1.setBounds(200, 165, 60, 25);
+		chckbxNewCheckBox_1.setBounds(220, 166, 60, 25);
 		panel.add(chckbxNewCheckBox_1);
 		
 
 		btnNewButton = new JButton("회원가입");
+		btnNewButton.setIcon(new ImageIcon("login/05.jpg"));
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(passwordField.getText().equals(passwordField_1.getText())) {
@@ -139,9 +148,15 @@ public class JoinView extends JFrame {
 				}
 			}
 		});
-		btnNewButton.setBounds(180, 240, 100, 25);
+		btnNewButton.setBounds(160, 232, 120, 33);
 		panel.add(btnNewButton);
+		
+		JLabel lblNewLabel = new JLabel("");
+		lblNewLabel.setIcon(new ImageIcon("login/back1.jpg"));
+		lblNewLabel.setBounds(0, 0, 339, 318);
+		panel.add(lblNewLabel);
 		
 		setVisible(true);
 	}
 }
+

@@ -58,7 +58,7 @@ public class MainProcess{
 
 			bgm = new soundPlayer("sound/Bed_and_Breakfast.wav", 1, true);
 			bgm.playBgm();
-
+			
 
 		}
 		catch(IOException e){
@@ -117,8 +117,8 @@ public class MainProcess{
 		int i = 0;
 		igame = new IGameView(this);
 		ClientList = new ArrayList<sendclient>();
-		Receive_msg_thread rmt = new Receive_msg_thread();
 		textlist = new ArrayList<String>();
+		Receive_msg_thread rmt = new Receive_msg_thread();
 
 		try {
 			if(single)
@@ -239,6 +239,7 @@ public class MainProcess{
 
 	public void send_chat(String text) {
 		textlist = new ArrayList<String>();
+		
 		if(text.equals("close")) {
 			textlist.add(text);
 			try {
@@ -255,7 +256,6 @@ public class MainProcess{
 				oos.writeObject(textlist);
 				oos.flush();
 			} catch (IOException e) {	e.printStackTrace();	}
-
 
 		}else {
 			textlist.add("chat");
@@ -280,25 +280,21 @@ public class MainProcess{
 	public void connuser() {
 		textlist = new ArrayList<String>();
 		try {
-			num = null;
 			textlist.add("data");
 			System.out.println(textlist);
 
 			oos.writeObject(textlist);
 			oos.flush();
 			
-			if(ois == null) {
-				ois = new ObjectInputStream(socket.getInputStream());
-			}
-			
 			System.out.println("게임중인방 수, 접속중인 유저 수, 대기중인 유저 수 요청");
 			num = (int[])ois.readObject();
-			System.out.println("게임중인방 수, 접속중인 유저 수, 대기중인 유저 수 수신");
 			System.out.println(num[0] + " " + num[1] + " " + num[2]);
 
 			iview.settitle(num);
+			
 		} catch (ClassNotFoundException | IOException | ClassCastException e ) {
-			System.out.println("게임중인방 수, 접속중인 유저 수, 대기중인 유저 수 수신");
+			e.printStackTrace();
+			System.out.println("오류");
 			
 		}
 		textlist.clear();

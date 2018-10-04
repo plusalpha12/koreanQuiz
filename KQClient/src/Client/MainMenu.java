@@ -27,13 +27,8 @@ public class MainMenu extends JFrame {
 	public MainMenu(MainProcess main) {
 		
 		this.main = main;
-		
-		icon = new ImageIcon("drawable/background3.jpg");
-		Image image = icon.getImage();
-		Image cimage = image.getScaledInstance(500, 400, image.SCALE_SMOOTH);
-		icon = new ImageIcon(cimage);
-		JLabel jl = new JLabel(icon);
-		jl.setBounds(0, 0, 500, 400);
+		JLabel jl = new JLabel(new ImageIcon("igame/back2.jpg"));
+		jl.setBounds(0, 0, 450, 300);
 
 		setTitle("game menu");
 
@@ -46,8 +41,9 @@ public class MainMenu extends JFrame {
 		setContentPane(contentPane);		
 
 		JButton button_login = new JButton("초성게임");
+		button_login.setIcon(new ImageIcon("igame/igame.jpg"));
 		button_login.setLayout(null);
-		button_login.setBounds(125, 25, 200, 50);
+		button_login.setBounds(120, 25, 210, 50);
 		button_login.setFont(new Font("휴먼편지체", Font.PLAIN, 35));
 		button_login.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -57,8 +53,9 @@ public class MainMenu extends JFrame {
 		});
 
 		JButton button_start = new JButton("문장게임");
+		button_start.setIcon(new ImageIcon("igame/sen.jpg"));
 		button_start.setLayout(null);
-		button_start.setBounds(125, 100, 200, 50);
+		button_start.setBounds(120, 100, 210, 50);
 		button_start.setFont(new Font("휴먼편지체", Font.PLAIN, 35));
 		button_start.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -68,8 +65,9 @@ public class MainMenu extends JFrame {
 		});
 
 		JButton button_logout = new JButton("로그아웃");
+		button_logout.setIcon(new ImageIcon("igame/out.jpg"));
 		button_logout.setLayout(null);
-		button_logout.setBounds(25, 200, 125, 50);
+		button_logout.setBounds(25, 200, 116, 50);
 		button_logout.setFont(new Font("휴먼편지체", Font.PLAIN, 25));
 		button_logout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -80,8 +78,9 @@ public class MainMenu extends JFrame {
 		});
 
 		JButton button_join = new JButton("회원가입");
+		button_join.setIcon(new ImageIcon("igame/join.jpg"));
 		button_join.setLayout(null);
-		button_join.setBounds(300, 200, 125, 50);
+		button_join.setBounds(300, 200, 116, 50);
 		button_join.setFont(new Font("휴먼편지체", Font.PLAIN, 25));
 		button_join.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {

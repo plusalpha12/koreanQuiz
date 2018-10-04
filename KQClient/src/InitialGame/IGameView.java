@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -32,7 +33,6 @@ public class IGameView extends JFrame {
 	private JScrollPane sp;
 	private JLabel quizlabel = new JLabel();
 	final static JProgressBar progressBar = new JProgressBar();
-	static JFrame frame = new JFrame();
 	Thread dthread = new Thread(new d_Thread(progressBar, true));
 	JButton ready = new JButton("준비하기");
 	JButton ans_input = new JButton("입력");
@@ -45,7 +45,6 @@ public class IGameView extends JFrame {
 	JLabel userline[] = new JLabel[4];
 
 	public IGameView(MainProcess main){
-
 
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setResizable(false);

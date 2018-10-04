@@ -5,5 +5,8 @@
 	<classpathentry kind="src" path="drawable"/>
 	<classpathentry kind="src" path="achieve"/>
 	<classpathentry kind="src" path="sound"/>
+	<classpathentry kind="src" path="login"/>
+	<classpathentry kind="src" path="igame"/>
+	<classpathentry kind="src" path="sentence"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

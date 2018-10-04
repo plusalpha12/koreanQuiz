@@ -9,7 +9,7 @@ import serial.sendclient;
 
 public class InitialGameRoom {
 
-	private ObjectOutputStream oos = null;
+	private ObjectOutputStream oos2 = null;
 	private ArrayList<Client> userlist = null;
 	private ArrayList<sendclient> userlist2 = null;
 	private sendclient user = null;
@@ -108,9 +108,9 @@ public class InitialGameRoom {
 
 	public void Send_userdata(ArrayList<sendclient> c, Socket soc2) {
 		try {
-			oos = new ObjectOutputStream(soc2.getOutputStream());
-			oos.writeObject(c);
-			oos.flush();
+			oos2 = new ObjectOutputStream(soc2.getOutputStream());
+			oos2.writeObject(c);
+			oos2.flush();
 			System.out.println("Send_userdata");
 		}
 		catch (IOException e) {
@@ -133,9 +133,9 @@ public class InitialGameRoom {
 
 	public void Send_msg(ArrayList<String> textlist, Client sclient) {
 		try {
-			oos = new ObjectOutputStream(sclient.getSocket().getOutputStream());
-			oos.writeObject(textlist);
-			oos.flush();
+			oos2 = new ObjectOutputStream(sclient.getSocket().getOutputStream());
+			oos2.writeObject(textlist);
+			oos2.flush();
 			System.out.println("send_msg");
 		}
 		catch (IOException e) {	e.printStackTrace(); }
